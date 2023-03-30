@@ -1,0 +1,184 @@
+{% extends 'dashboard.html' %}
+
+{% load static %}
+
+{% load i18n %}
+
+{% block titulo %}
+    Notificaciones Citas Médicas
+{% endblock %}
+
+{% block pagina %}
+    Notificaciones Enviadas - Citas Médicas
+{% endblock %}
+
+{% block style %}
+    <style type="text/css">
+        td {
+            white-space: normal !important;
+        }
+        #datatable td {
+            white-space: normal !important;
+            margin: 8px;
+            padding: 3px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% include 'modal_cargando.html' %}
+    <div class="col-md-10 col-12 mb-3">
+        <form action="{% url "sol_gen_cmedicas" %}" method="get">
+            <div class="row">
+                <label class="col-10" style="font-size: 10pt;">Seleccione un rango de fechas para realizar bisqueda personalizada:</label>
+                <div class="input-group">
+                    <input class="col-3 form-control form-control-sm border-primary" name="f_ini" type="date" data-date="" data-date-format="YYYY-MM-DD" required>
+                    <input class="col-3 form-control form-control-sm border-primary" name="f_fin" type="date" data-date="" data-date-format="YYYY-MM-DD" required>
+                    <button class="col-3 btn btn-sm btn-primary btn-block text-center text-white" type="submit"><i class="icofont-checked"></i> Consultar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-12 mb-3 mt-lg-2 mt-5">
+        <div class="col-sm-12">
+            <hr>
+            <h4>Registros del {{ fecha_queryset }}</h4>
+            <hr>
+        </div>
+        <div class="col-sm-12">
+            <div class="table table-responsive" style="overflow-y: scroll; height: 631px; overflow-x: scroll;">
+                <table style="font-size: 9pt !important;" id="datatable" class="enviar_aten table table-bordered table-condensed border-primary table-hover">
+                    <thead class="text-center" style="vertical-align: middle;">
+                        <tr style="font-size: 7pt;" class="text-white bg-primary border-primary">
+                            <th class="border-primary" scope="col">No.</th>
+                            <th class="border-primary" scope="col">Fecha<br>notificación</th>
+                            <th class="border-primary" scope="col">Fecha<br>Solicitud</th>
+                            <th class="border-primary" scope="col">Paciente</th>
+                            <th class="border-primary" scope="col">Notificación<br>Realizada</th>
+                            <th class="border-primary" scope="col">Id. Cita<br>E-salud</th>
+                            <th class="border-primary" scope="col">Estado<br>SMS</th>
+                            <th class="border-primary" scope="col">Estado<br>Whatsapp</th>
+                            <th class="border-primary" scope="col">Estado<br>Email</th>
+                            <th class="border-primary" scope="col">Observación</th>
+                            <th class="border-primary" scope="col">Usuario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in data %}
+                            <tr style="text-align: center;">
+                                <td class="p-0">{{ forloop.counter }}</td>
+                                <td class="p-0">{{ d.fecha | date:'d/m/Y h:i a'}}</td>
+                                <td class="p-0">{{ d.id_aten.fecha_s | date:'d/m/Y h:i a' }}</td>
+                                <td class="p-0">{{ d.id_aten.pcte.tipo_id.tipo_id }}. {{ d.id_aten.pcte.numero_id }}<br>
+                                                {{ d.id_aten.pcte.p_nombre.title }} {{ d.id_aten.pcte.p_apellido.title }}</td>
+                                <td class="p-0">{% if d.id_aten.descartar %}Descartar Solicitud{% endif %}{% if d.id_aten.l_espera %}Espera Cita{% else %}{{ d.id_aten.tramite.tramite.title }}{% endif %}</td>
+                                <td class="p-0">{{ d.id_cita }}</td>
+                                <td class="p-0 {% if d.sms %}text-success{% else %}text-danger{% endif %}">{% if d.sms %}SI{% else %}NO{% endif %}</td>
+                                <td class="p-0 {% if d.whatsapp %}text-success{% else %}text-danger{% endif %}">{% if d.whatsapp %}SI{% else %}NO{% endif %}</td>
+                                <td class="p-0 {% if d.mail %}text-success{% else %}text-danger{% endif %}">{% if d.mail %}SI{% else %}NO{% endif %}</td>
+                                <td class="p-0">{{ d.observacion }}</td>
+                                <td class="p-0">{{ d.user.username }}</td>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="text-center" style="vertical-align: middle; text-transform: uppercase;">
+                        <tr style="font-size: 7pt;" class="text-white bg-primary border-primary">
+                            <th class="border-primary" scope="col">No.</th>
+                            <th class="border-primary" scope="col">Fecha<br>notificación</th>
+                            <th class="border-primary" scope="col">Fecha<br>Solicitud</th>
+                            <th class="border-primary" scope="col">Paciente</th>
+                            <th class="border-primary" scope="col">Notificación<br>Realizada</th>
+                            <th class="border-primary" scope="col">Id. Cita<br>E-salud</th>
+                            <th class="border-primary" scope="col">Estado<br>SMS</th>
+                            <th class="border-primary" scope="col">Estado<br>Whatsapp</th>
+                            <th class="border-primary" scope="col">Estado<br>Email</th>
+                            <th class="border-primary" scope="col">Observación</th>
+                            <th class="border-primary" scope="col">Usuario</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts%}
+    <script>
+        $(document).ready(function (e){
+            $('#menu_citas').addClass('active');
+
+            notificacion({{ ind }},'{{ aviso }}');
+
+            function buscar(id) {
+                var input, filter, table, tr, td, i, txtValue;
+                input = document.getElementById("search");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("datatable");
+                tr = table.getElementsByTagName("tr");
+
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[id];
+                    if (td) {
+                        txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        }
+                        else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+            setTimeout(function(){
+                $("#datatable_wrapper").prepend("<div id='contentExt' class='row'></div>");
+                $(".dt-buttons").prependTo("#contentExt");
+                $("#datatable_filter").appendTo("#contentExt");
+                $("#datatable_filter input").addClass("border-primary");
+                $(".dt-buttons").addClass("col-6");
+                $("#datatable_filter").addClass("col-6");
+                $(".buttons-excel").text('Exportar a Excel');
+                $(".buttons-excel").parent().attr('style', 'padding-left:0px !important');
+                $(".buttons-excel").addClass('btn btn-sm btn-primary pt-1 pb-1 pl-3 pr-3');
+                $(".buttons-excel").prepend("<i class='icofont-file-excel'></i>&emsp;");
+            },50);
+
+            $('#datatable').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel',
+                ]
+            });
+
+            $(".search_btn").click(function (e){
+                buscar($(this).val());
+            });
+
+            $(".enviar_aten").on('click', '.descartar', function (data) {
+                $.ajax({
+                    type: 'post',
+                    url: '{% url "solicitud_whatsapp" %}',
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        no_id: $(this).val(),
+                        tp_op: "descartar"
+                    },
+                    beforeSend: function (){
+                        $("#gifModal").modal("show")
+                    },
+                    success: function (data){
+                        console.log(data)
+                        if (data['ind'] == '2'){
+                            $("#gifModal").modal("hide")
+                            $("#"+data.data).remove();
+                            notificacion(data.ind, data.aviso);
+                        }
+                        else {
+                            notificacion(0, "Problemas al tratar de atender la solicitud");
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+ {% endblock %}

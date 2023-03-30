@@ -1,0 +1,143 @@
+{% extends 'dashboard.html' %}
+
+{% block titulo_pag %}
+ Menu
+{% endblock %}
+
+{% block titulo %}
+    Recordatorio Whatsapp
+{% endblock %}
+
+{% block sub_titulo %}
+    Citas médicas
+{% endblock %}
+
+{% block menu_cartera %}
+ active
+{% endblock %}
+
+{% block style %}
+ <style>
+ </style>
+{% endblock %}
+
+{% block content %}
+    <div class="col-xxl-10 col-12 mb-3 mt-lg-2 mt-5">
+        <div class="card border-primary bg-soft-primary">
+            <div class="row card-body">
+                <div class="col-12">
+                    <h3>Información del paciente:</h3>
+                </div>
+                <div class="col-12">
+                    <hr>
+                </div>
+                <div class="col-sm-4 col-12">
+                    <label>Tipo de id:</label>
+                    <select class="form-select form-select-sm border-primary" name="t_id" id="t_id" autocomplete="off" required>
+                        <option>Seleccione</option>
+                        {% for t in tipo_id %}
+                            <option value="{{ t.tipo_id }}">{{ t.tipo_id}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-sm-8 col-12">
+                    <label>Nuḿero de id:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control-sm border-primary" name="no_id" id="no_id" autocomplete="off" required>
+                        <button class="btn btn-sm btn-primary text-white" type="button" id="consultar_paciente">
+                            <i class="icofont-search"></i> <strong>Buscar</strong>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <hr>
+                </div>
+                <div class="col-12" id="paciente" style="color: black"></div>
+                <div class="table table-responsive" style="overflow-y: scroll;">
+                    <table style="font-size: 7.5pt !important;" id="datatable" class="enviar table table-bordered border-primary">
+                        <thead class="text-center">
+                            <tr style="font-size: 6.2pt;" class="text-white bg-primary border-primary">
+                                <th class="border-primary" scope="col">Fecha Cita</th>
+                                <th class="border-primary" scope="col">Convenio</th>
+                                <th class="border-primary" scope="col">Especialidad</th>
+                                <th class="border-primary" scope="col">Telefono</th>
+                                <th class="border-primary" scope="col">Enviar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="citas"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-info">
+        <div class="card-body">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts%}
+    <script>
+        $(document).ready(function (e){
+            notificacion({{ ind }},'{{ aviso }}');
+            $("#consultar_paciente").click(function (e) {
+                if($("#no_id").val() !=""){
+                    var no_id = $("#no_id").val();
+                    var t_id = $("#t_id").val();
+                    $.ajax({
+                        url:   '{% url "search_cita" %}',
+                        type:  'post',
+                        data: {
+                            t_id: t_id,
+                            no_id: no_id,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success:  function (data) {
+                            $("#paciente").empty();
+                            if (data.ind == 2){
+                                $("#paciente").text(data.citas[0].nombre);
+                                for (var i = 0; i < (data.citas).length; i++) {
+                                    $("#citas").append(' \
+                                        <tr class="{{ d.id_linea }}"> \
+                                            <td class="text-center">'+data.citas[i].fecha+'</td> \
+                                            <td colspan="">'+data.citas[i].convenio+'</td> \
+                                            <td class="text-center">'+data.citas[i].especialidad+'</td> \
+                                            <td class="text-center">'+data.citas[i].telefono+'</td> \
+                                            <td class="p-0 m-0 text-center '+data.citas[i].ids+'"> \
+                                                <div class="form-group mt-3"> \
+                                                    <button type="button" class="btn btn-success btn-sm p-1 send_msg" value="'+data.citas[i].ids+'"> \
+                                                        <i class="icofont-check"></i> \
+                                                    </button> \
+                                                </div> \
+                                            </td> \
+                                        </tr>');
+                                }
+                            }
+                            if (data.ind == 0){
+                                $("#no_id").val("");
+                                notificacion(data.ind,data.aviso)
+                            }
+                        }
+                    })
+                }
+            });
+            $("#citas").on("click",".send_msg", function(e){
+                var td = $(this).parent().parent().parent();
+                $.ajax({
+                    url:   '{% url 'wsapp_c' %}',
+                    type:  'post',
+                    data: {
+                        id_cita: $(this).val(),
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    success:  function (data) {
+                        td.remove();
+                        notificacion(data.ind,data.aviso)
+                    }
+                })
+            });
+        });
+    </script>
+ {% endblock %}

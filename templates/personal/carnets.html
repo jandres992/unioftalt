@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Empleados - Carnet</title>
+        <style>
+        @page {
+            size: letter portrait;
+            margin: 20px 20px;
+            padding: 0px;
+        }
+        .fondo{
+            border: solid 1px black;
+            position: absolute;
+            top:0px;
+            left: 0px;
+            width: 8cm;
+            height: 5cm;
+        }
+        .fondo2{
+            border: solid 1px black;
+            position: absolute;
+            top:0px;
+            left: 9cm;
+            width: 8cm;
+            height: 5cm;
+        }
+        .nombre{
+            text-align: center;
+            width:8cm !important;
+            position:absolute;
+            font-size: 16.5pt;
+            left: 0cm;
+            top: 1.95cm;
+            font-family: Arial !important;
+            font-weight: 800;
+        }
+        .apellido{
+            text-align: center;
+            width:8cm;
+            position:absolute;
+            font-size: 11pt;
+            left: 0cm;
+            top: 2.65cm;
+            font-family: Arial;
+            font-weight: 900;
+        }
+        .cargo{
+            color:white !important;
+            width:8cm;
+            position:absolute;
+            font-size: 11pt;
+            left: 0.1cm;
+            top: 4.6cm;
+            font-family: Arial;
+            font-weight: 700;
+        }
+        .rh{
+            color:white !important;
+            width:3cm;
+            position:absolute;
+            font-size: 11pt;
+            left: 6.4cm;
+            top: 4.53cm;
+            font-family: Arial;
+            font-weight: 900;
+        }
+        .acudiente{
+            padding: 5px;
+            color:black;
+            text-align: center;
+            width:8cm;
+            position:absolute;
+            font-size: 10pt;
+            left: 9cm;
+            top: 1.65cm;
+            font-family: Arial;
+            font-weight: 900;
+        }
+        .tel_acudiente{
+            padding: 5px;
+            color:black;
+            text-align: center;
+            width:8cm;
+            position:absolute;
+            font-size: 10pt;
+            left: 9cm;
+            top: 2.8cm;
+            font-family: Arial;
+            font-weight: 900;
+        }
+        .eps{
+            padding: 5px;
+            color:black;
+            text-align: center;
+            width:8cm;
+            position:absolute;
+            font-size: 10pt;
+            left: 9cm;
+            top: 3.15cm;
+            font-family: Arial;
+            font-weight: 900;
+        }
+        </style>
+    </head>
+    <body>
+        <img style="position:absolute; top:15px !important; width: 70px; left: 5px;" src="/static/img/logo_eye_letra.png">
+        <img style="position:absolute; top:33px !important; width: 140px; left: 70px;" src="/static/img/logo_letra.png">
+        <img class="fondo" style="z-index: -1000;" src="/static/img/back_card.png">
+        <img class="fondo2" style="z-index: -1000;" src="/static/img/back_card.png">
+
+        <div class="nombre">{{ nombre }}</div>
+        <div class="apellido">{{ apellido }}</div>
+
+        <div class="cargo">{{ cargo }}</div>
+        <div class="rh">Rh: {{ rh }}</div>
+        <div class="acudiente">En caso de emergencia llamar a:<br>{{ acudiente }}</div>
+        <div class="tel_acudiente">Telefono: {{ tel_acudiente }}</div>
+        <div class="eps">Eps: {{ eps }}</div>
+    </body>
+</html>

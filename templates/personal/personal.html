@@ -1,0 +1,116 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block titulo %}
+    Gestión Personal
+{% endblock %}
+
+
+{% block pagina %}
+    Gestión de información - Personal
+{% endblock %}
+
+
+{% block style %}
+    <style>
+        .table {
+            font-size: 8pt !important;
+            color: black;
+        }
+        .flotante{
+            position: absolute;
+            z-index: 3001;
+            top:2.6cm;
+            right: 0cm;
+        }
+    </style>
+{% endblock %}
+
+{% block flotante %}
+    <button class="btn flotante btn-primary" type="button" id="nuevo_persBtn">
+        <i class="icofont-plus"></i>
+        <i class="icofont-user"></i>
+    </button>
+{% endblock %}
+
+{% block modal %}
+    {% include 'general/modal_paciente.html' %}
+    {% include 'personal/nuevo_personal.html' %}
+    {% include 'personal/modificacion_personal.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="table-responsive">
+            <table class="table table-responsive border-primary" id="tablePersonal">
+                <thead class="alert-primary text-center">
+                    <tr>
+                        <th>Nombre Empleado</th>
+                        <th>Fecha de Ingreso</th>
+                        <th>Area</th>
+                        <th>Cargo</th>
+                        <th>Foto</th>
+                        <th>Imp. carnet</th>
+                        <!--th>Editar</th-->
+                    </tr>
+                </thead>
+                <tbody>
+                {% for p in personal %}
+                    {% if p.persona.numero_id != "" %}
+                        <tr>
+                            <td>
+                                {{ p.persona.p_nombre }} {{ p.persona.s_nombre }} {{ p.persona.p_apellido }} {{ p.persona.s_apellido }}<br>
+                                {{ p.persona.tipo_id.tipo_id }}. {{ p.persona.numero_id }} de {{ p.lugar_exp }}
+                            </td>
+                            <td style="font-size: 10pt">{{ p.fecha_ingreso | date:'d-m-Y' }}</td>
+                            <td style="font-size: 8pt">{{ p.area.area }}</td>
+                            <td style="font-size: 10pt">{{ p.cargo.cargo }}</td>
+                            <td><img style="width: 45px" src="/media/{{ p.imagen }}"></td>
+                            <td style="text-align: center;">
+                                <button class="btn btn-success btn-xs carnets" style="border-radius: 1.2rem;font-size: 14pt;" type="button" value="{{ p.id }}">
+                                    <i class="icofont-card"></i>
+                                </button>
+                            </td>
+                            <!--td style="text-align: center;">
+                                <button type="button" style="border-radius: 1.2rem; font-size: 14pt;" data-toggle="modal" data-target="#editar_empleadoModal"class="btn btn-primary btn-xs" name="editar_empleado" value="{{ personal.identificacion }}">
+                                    <i class="icofont-edit"></i>
+                                </button>
+                            </td-->
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+                <tfoot class="alert-primary text-center">
+                    <tr>
+                        <th>Nombre Empleado</th>
+                        <th>Fecha de Ingreso</th>
+                        <th>Area</th>
+                        <th>Cargo</th>
+                        <th>Foto</th>
+                        <th>Imp. carnet</th>
+                        <!--th>Editar</th-->
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts%}
+    <script>
+        $(document).ready(function (e){
+            $('#menu_personal').addClass('active');
+
+            notificacion({{ ind }},"{{ aviso }}");
+
+            $('#newpersonalModal').modal({backdrop: 'static', keyboard: false});
+            $("#nuevo_persBtn").click(function (e) {
+                $('#newpersonalModal').modal("show");
+            });
+
+            $(".carnets").click(function (e){
+                window.open("{% url 'carnet_pers' %}?id="+$(this).val());
+            });
+        });
+    </script>
+{% endblock %}

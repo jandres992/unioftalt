@@ -1,0 +1,42 @@
+<hr class="m-1 p-1 bg-primary">
+<h5 class="">&emsp;Datos Persona:</h5>
+<hr class="m-1 p-1 bg-primary">
+<div class="col-12">
+    <form id="busqPaciente" method="get" action="{% url 'busq_persona' %}">
+        <label class="text-white">Datos paciente:</label>
+        <div class="input-group input-group-sm mb-3">
+            <select class="form-select form-select-sm border-primary" name="tp_id_pcte" autocomplete="off" required>
+                <option value="">Tipo de Id</option>
+                {% for t in tipo_id %}
+                    <option value="{{ t.id }}">{{ t.tipo_id }} - {{ t.detalle }}</option>
+                {% endfor %}
+            </select>
+            <input type="text" class="form-control form-control-sm border-primary" placeholder="Número de Id" name="no_id_pcte" autocomplete="off" required>
+            <button type="submit" class="btn btn-primary border-primary" id="btn_busq_pcte">
+                <i class="icofont-search"></i>&emsp;<strong>Buscar</strong>
+            </button>
+        </div>
+    </form>
+</div>
+
+<div class="col-12">
+    <hr class="m-1">
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-12" style="color: lightslategray;">
+        <div class="col-12" style="display: none;" id="pcte_ref">
+            <span class="text-dark" id="nombre_view">Nombre persona</span> -
+            <span class="text-dark" id="documento_view">CC. .........</span><br>
+            Dirección: <span class="text-dark" id="direccion_view"></span><br>
+            Telefono: <span class="text-dark" id="telefono_view"></span><br>
+            Email: <span class="text-dark" id="email_view"></span>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-12 d-grid gap-2" style="color: lightslategray;">
+        <button type="submit" id="actualizar_pcte" class="btn btn-primary btn-block">
+            <i class="icofont-refresh"></i> Actualizar datos
+        </button>
+    </div>
+</div>

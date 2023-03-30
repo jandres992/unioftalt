@@ -1,0 +1,33 @@
+{% extends 'login/template.html' %}
+
+{% block titulo %}
+    Turno Digital - {{ request.session.empresa.n_app }}
+{% endblock %}
+
+{% block titulo_app %}
+    Turno Digital
+{% endblock %}
+
+{% block url_login %}
+    {% url 'dig_login' %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-12 mb-3">
+        <label class="text-dark">Módulo</label>
+        <select class="form-select border-dark autocomplete" type="text" name="modulo" required autocomplete="off">
+            <option value="">Seleccione</option>
+            {% for m in modulos %}
+                <option value="{{ m.modulo }}">Módulo - {{ m.modulo }}</option>
+            {% endfor %}
+        </select>
+    </div>
+{% endblock %}
+
+{% block scripts%}
+    <script>
+        $(document).ready(function (e){
+            notificacion({{ ind }}, "<small style='font-size:10pt;'>{{ aviso }}</small>");
+        });
+    </script>
+{% endblock %}

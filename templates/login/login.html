@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+{% load static %}
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="icon" type="image/png" href="{% static 'img/logo.png' %}" />
+
+        <title>Login - {% block titulo %}{% endblock %}</title>
+
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/core/libs.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/vendor/aos/dist/aos.css' %}"/>
+        <link rel="stylesheet" href="{% static 'icon/icofont/css/icofont.min.css' %}" />
+        <link rel="stylesheet" href="{% static 'notificacion/css/animate.css' %}" />
+
+        <style>
+            .image{
+                width: 100%;
+                height: auto;
+                background-image: url("{% static 'img/empresa.png'%}");
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+            }
+        </style>
+    </head>
+
+    <body class="bg-gray-200 image">
+        <main class="main-content mt-0">
+            <div class="page-header align-items-start min-vh-100">
+                <span class="mask bg-gradient-dark opacity-8"></span>
+                <div class="container my-auto">
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-6 col-md-8 col-12 mx-auto">
+                            <div class="card z-index-3">
+                                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+                                    <div class="bg-dark shadow-drak border-radius-lg py-3 text-center">
+                                        <img src="{% static 'img/logo.png' %}" style="width: 10em;" alt="logo">&emsp;
+                                        <h4 class="text-white font-weight-bolder text-center mt-2 mb-0" style="text-transform: uppercase;">{{ request.session.empresa.n_app }}</h4>
+                                        <h5 class="text-white font-weight-bolder text-center mt-2 mb-0">{% block titulo_app %}{% endblock %}</h5>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <form role="form" class="text-start" method="post" action="{% block url_login %}{% endblock %}">{% csrf_token %}
+                                        <div class="input-field col-12">
+                                            <input name="username" type="text" class="autocomplete" required="required" autocomplete="off">
+                                            <label for="autocomplete-input"><i class="icofont-user"></i>&emsp;Usuario</label>
+                                        </div>
+                                        <div class="input-field col-12">
+                                            <input name="password" type="password" class="autocomplete border-dark" required="required" autocomplete="off">
+                                            <label for="autocomplete-input"><i class="icofont-ui-password"></i>&emsp;Contraseña</label>
+                                        </div>
+                                        {% block content %}{% endblock %}
+
+                                        <div class="text-center">
+                                            <div class="d-grid gap-2">
+                                                <button type="submit" class="btn bg-dark" id="btnLogin">
+                                                    <i class="icofont-login"></i>
+                                                    <strong>Iniciar sesión</strong>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <footer class="footer position-absolute bottom-2 py-2 w-100">
+                    <div class="row">
+                        <div class="col-12 text-center align-items-center justify-content-center">
+                            © <script> document.write(new Date().getFullYear()) </script>. {{ request.session.empresa.razon_social }}
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </main>
+
+        <script src="{% static 'dashboard/assets/js/core/libs_login.min.js' %}"></script>
+        <script src="{% static 'notificacion/bootstrap_notify/bootstrap-notify.js' %}"></script>
+        <script src="{% static 'notificacion/js/notificacion.js' %}"></script>
+    </body>
+</html>

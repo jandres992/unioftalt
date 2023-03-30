@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+    {% load static %}
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Pantalla - {{ empresa.nombre }}</title>
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="{% static 'img/logo.png' %}"/>
+
+        <!-- Hope ui Library -->
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/core/libs.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/hope-ui.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/custom.min.css' %}" />
+        <link rel="stylesheet" href="{% static 'icon/icofont/css/icofont.css' %}" />
+        <link rel="stylesheet" href="{% static 'notificacion/css/animate.css' %}" />
+        <style>
+			.parpadea {
+				animation-name: parpadeo;
+				animation-duration: 1.5s;
+				animation-timing-function: linear;
+				animation-iteration-count: infinite;
+
+				-webkit-animation-name:parpadeo;
+				-webkit-animation-duration: 1.5s;
+				-webkit-animation-timing-function: linear;
+				-webkit-animation-iteration-count: infinite;
+				text-shadow: -3px 2px 0 #ffffff, -8px 2px 0 #535353;
+			}
+
+            body{
+                font-family: 'Arial' !important;
+            }
+
+			@-moz-keyframes parpadeo{
+				0% { opacity: 1.0; }
+				50% { opacity: 0.0; }
+				100% { opacity: 1.0; }
+			}
+
+			@-webkit-keyframes parpadeo {
+				0% { opacity: 1.0; }
+				50% { opacity: 0.0; }
+				100% { opacity: 1.0; }
+			}
+
+			@keyframes parpadeo {
+				0% { opacity: 1.0; }
+				50% { opacity: 0.0; }
+				100% { opacity: 1.0; }
+			}
+            body{
+                overflow: hidden;
+            }
+		</style>
+    </head>
+    <body>
+        <div class="modal" id="turno-pantalla" tabindex="-1" aria-labelledby="turno-pantallaLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 95%;" role="document">
+                <div class="modal-content border-dark" style="border: solid 10px; border-radius: 40px;">
+                    <div class="modal-body justify-content-around text-center">
+                        <div class="row">
+                            <div class="col-12" style="display: none;">
+                                <audio id="anuncio_turno" src=""></audio>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 pt-3">
+                                    <a class="card bg-dark">
+                                        <div class="card-body p-0">
+                                            <div class="d-flex flex-column text-center text-white align-items-center justify-content-between pt-3">
+                                                <h1 class="text-white"><strong>TURNO</strong></h1>
+                                                <div class="card-profile-progress mt-0">
+                                                    <div style="font-size: 100pt !important; font-weight: 900;">
+                                                        <p class="mb-3"><i class="icofont-ticket"></i> <strong id="turnoAnun"></strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                <div class="col-6 pt-3">
+                                    <a class="card bg-dark">
+                                        <div class="card-body p-0">
+                                            <div class="d-flex flex-column text-center text-white align-items-center justify-content-between pt-3">
+                                                <h1 class="text-white"><strong>MODULO</strong></h1>
+                                                <div class="card-profile-progress mt-0">
+                                                    <div style="font-size: 100pt !important; font-weight: 900;">
+                                                        <p class="mb-3"><i class="icofont-user-suited"></i> <strong id="moduloAnun"></strong></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <a class="p-5" style="width: 100%; font-size: 40pt;">
+                                    <p style="font-size:55pt;" class="tTurnoAnun text-dark mb-0 mt-0 pt-0 pb-0">
+                                        <strong id="pcteAnun"></strong>
+                                    </p>
+                                    <p style="font-size:50pt;" class="tTurnoAnun text-dark mb-0">
+                                        <strong>TURNO</strong>
+                                        <strong id="tTurnoAnun"></strong>
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong class="text-dark" id="servicioAnun"></strong>
+                                    </p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row contenedor">
+            <div class="col-12 col-sm-5 col-lg-4 text-center" style="background-color: #232222;">
+                <div class="col-12 p-0">
+                    <div class="card" style="background-color: transparent;">
+                        <div class="card-body p-0 d-flex justify-content-around text-center text-white" style="font-size: 40pt;">
+                            <div class="col-6 p-0">
+                                <strong style="font-weight: 900;">TURNO</strong>
+                            </div>
+                            <div class="col-6 p-0">
+                                <strong style="font-weight: 900;">MODULO</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 p-0" id="modulos_proyect"></div>
+            </div>
+
+            <div class="col-12 col-sm-7 col-lg-8" style="padding-left: 0px;">
+                <div class="col-12 text-center">
+                    <img width="330" src="{% static 'img/logo_ext.png' %}">
+                </div>
+
+                <div class="content-wrapper p-2 mb-0 ml-0">
+                    <div class="col-12" style="padding-right: 0px;">
+                        <div class="card mb-0" style="background-color:black;">
+                            <div class="card-body p-1">
+                                <div id="publicidad">
+                                    <video id="video" controls muted playsinline preload="auto" style="width: 100%; height:640px; display:none;">
+                                        <source src="" type="video/mp4">
+                                    </video>
+                                    <img id="imagen" src="" style="width: 100%; height:640px; display:none;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mt-2" style="padding-right: 0px;">
+                        <div class="card mb-0">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-12 col-md-4">
+                                        <h2 class="mb-1"><strong>Horario de Atención:</strong></h2>
+                                        <p class="mb-0 text-secondary" style="font-size: 13pt;">
+                                             <strong>Consulta externa: </strong>De 06:00 am a 6:00 pm <br>
+                                             <strong>Urgencias: </strong>24 horas <br>
+                                        </p>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <h2 class="mb-1"><strong>Contáctenos:</strong></h2>
+                                        <p class="mb-0 text-secondary" style="font-size: 13pt;">
+                                            <strong>PBX:</strong> {{ empresa.tel }} <br>
+                                            <strong>Whatsapp:</strong> {{ empresa.tel }}<br>
+                                        </p>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <p></p>
+                                        <p class="mb-0 text-secondary" style="font-size: 13pt;">
+                                            <strong>Email: </strong> {{ empresa.email }}<br>
+                                            <strong>Website: </strong> {{ empresa.web }}
+                                        </p>
+                                    </div>
+                                </div>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 p-2 pt-1 text-center mt-5 pt-5">
+                    ©<script>document.write(new Date().getFullYear())</script> {{ empresa.razon_social }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Library Bundle Script -->
+        <script src="{% static 'dashboard/assets/js/core/libs.min.js' %}"></script>
+        <!-- External Library Bundle Script -->
+        <script src="{% static 'dashboard/assets/js/core/external.min.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/hope-ui.js' %}"></script>
+        <script src="{% static 'notificacion/bootstrap_notify/bootstrap-notify.js' %}"></script>
+        <script src="{% static 'notificacion/js/notificacion.js' %}"></script>
+        <script>
+            $(window).ready(function(){
+                $("#turno-pantalla").modal("show");
+                var height = $(window).height();
+                $('.contenedor').height(height);
+
+                $(window).resize(function() {
+                    height = $(window).height();
+                    $('.contenedor').height(height);
+                });
+
+                var videoS = null;
+                const session_pantalla = new WebSocket(`ws://${window.location.host}/ws/pantalla/`)
+
+                session_pantalla.onmessage = function(e) {
+                    const data = JSON.parse(e.data);
+                    console.log(data);
+                    if (data.tipo == "publicidad"){
+                        localStorage.setItem('actual_publicidad', data.data.order)
+                        if(data.data.t_publ == "video" ) {
+                            let video = $("#video")[0];
+                            video.src = '/media/publicidad/video/' + data.data.publicidad;
+                            video.load();
+                            videoS = video.play();
+                            $("#video").show();
+                            $("#imagen").hide();
+                            if (videoS !== undefined) {
+                                videoS.then(_ => {
+                                    video.play();
+                                    $("video").prop('muted', false);
+                                    $("video").prop("volume", 0.25);
+                                })
+                                .catch(error => {
+                                    console.log('error')
+                                });
+                            }
+                        }else{
+                            $("#imagen").attr('src', "/media/publicidad/img/" + data.data.publicidad);
+                            $("#imagen").show();
+                            $("#video").hide();
+                        }
+                    } else if (data.tipo == "modulos") {
+                        let datos = data.data.data;
+
+                        $("#modulos_proyect").empty();
+                        for (var i = 0, limit = datos.length; i < limit; i++) {
+                            let no_turno = datos[i].turno;
+
+                            $("#modulos_proyect").append(' \
+                                <div class="card mb-1 p-0" style="background-color: transparent;"> \
+                                    <div class="card-body p-0 d-flex justify-content-around text-center text-white"> \
+                                        <div class="col-6 p-0" style="font-size:52pt;"> \
+                                            <strong class="turno"><i class="icofont-ticket"></i> ' + no_turno + '</strong> \
+                                        </div> \
+                                        <div class="col-6 p-0" style="font-size: 52pt;"> \
+                                            <strong class="modulo"><i class="icofont-users-alt-4"></i> ' + datos[i].modulo + '</strong> \
+                                        </div> \
+                                    </div> \
+                                </div>');
+                        }
+                    } else if (data.tipo == "proyeccion" ){
+                        if (data.data.ind == '2') {
+                            for (var i = 0, limit = (data.data.lista).length; i < limit; i++) {
+                                if (data.data.lista[i].t_turno == "PREFERENCIAL"){
+                                    $('#turno-pantalla .bg-dark').removeClass('bg-dark').addClass('bg-primary');
+                                    $('#turno-pantalla .modal-content').removeClass('border-dark').addClass('border-primary');
+                                    $('.tTurnoAnun').removeClass('text-dark').addClass('text-primary');
+                                    $('#servicioAnun').removeClass('text-dark').addClass('text-primary');
+                                } else {
+                                    $('#turno-pantalla .bg-primary').removeClass('bg-primary').addClass('bg-dark');
+                                    $('#turno-pantalla .modal-content').removeClass('border-primary').addClass('border-dark');
+                                    $('.tTurnoAnun').removeClass('text-primary').addClass('text-dark');
+                                    $('#servicioAnun').removeClass('text-primary').addClass('text-dark');
+                                }
+
+                                $('#turnoAnun').text("");
+                                $('#moduloAnun').text("");
+                                $('#pcteAnun').text("");
+                                $('#tTurnoAnun').text("");
+                                $('#servicioAnun').text("");
+                                $('#turnoAnun').text(data.data.lista[i].turno);
+                                $('#pcteAnun').text(data.data.lista[i].pcte);
+                                $('#tTurnoAnun').text(data.data.lista[i].t_turno);
+                                $('#moduloAnun').text(data.data.lista[i].modulo);
+                                $('#servicioAnun').text(data.data.lista[i].servicio);
+                                $('#turno-pantalla').modal("show");
+                                $("#anuncio_turno").removeAttr('src');
+                                $("#anuncio_turno").prop('src', data.data.lista[i].audio);
+                                $("video").prop('muted', true);
+                                anuncio_turno.play();
+
+                                setTimeout(function() {
+                                    $("#modulos_proyect div:first .turno").removeClass("parpadea");
+                                    $("#modulos_proyect div:first .modulo").removeClass("parpadea");
+                                }, 20000);
+
+                                setTimeout(function () {
+                                    $('#turno-pantalla').modal("hide");
+                                    $("#modulos_proyect div:first .turno").addClass("parpadea");
+                                    $("#modulos_proyect div:first .modulo").addClass("parpadea");
+                                    if (videoS !== undefined) {
+                                        videoS.then(_ => {
+                                            video.play();
+                                            $("video").prop('muted', false);
+                                        })
+                                        .catch(error => {
+                                            console.log('error')
+                                        });
+                                    }
+                                }, 5000);
+                            }
+                        }
+                    }
+                }
+
+                function busq_video() {
+                    session_pantalla.send(JSON.stringify({
+                        "tipo": "publicidad",
+                        "order": localStorage.getItem('actual_publicidad')
+                    }))
+                }
+
+                $("#video").on('ended', function (e){
+                    busq_video();
+                });
+
+                setInterval( function() {
+                    if (! $("#imagen").is(':hidden')){
+                        session_pantalla.send(JSON.stringify({
+                            "tipo": "publicidad",
+                            "order": localStorage.getItem('actual_publicidad')
+                        }))
+                    }
+                }, 18000);
+
+                session_pantalla.onclose = function(e) {
+                    window.location.reload();
+                };
+
+            });
+        </script>
+    </body>
+</html>

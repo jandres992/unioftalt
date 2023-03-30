@@ -1,0 +1,128 @@
+<div class="container initial">
+    <!-- Modal -->
+	<div id="editar_empleadoModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<form class="form-group-sm" id="editar_empleado" method="post" action="" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-header alert-warning">
+                        <div class="col-11">
+							<h3 class="modal-title">ACTUALIZACIÓN DE DATOS DEL EMPLEADO</h3>
+						</div>
+						<button name="close" type="button" class="close pull-right" data-dismiss="modal">&times;</button>
+					</div>
+					<div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-8 col-12 form-group-sm">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label class="control-label">Nombres:</label>
+                                        <input class="form-control" name="editar_nombre" id="editar_nombre" value="" required />
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="control-label">Apellidos:</label>
+                                        <input class="form-control" name="editar_apellido" id="editar_apellido" value="" placeholder="" required />
+                                    </div>
+
+                                    <div class="col-lg-12 col-md-12 col-xs-12" style="padding-bottom: 10px">
+                                        <hr/>
+                                    </div>
+
+                                    <div class="col-lg-3 col-md-3 col-xs-6">
+                                        <label>Tipo de ID:</label>
+                                        <select class="form-control" name="editar_tipoid" id="editar_tipoid" readonly="readonly" >
+                                            <option value="">Seleccione</option>
+                                            {% for tipo in tipoid %}
+                                                {% if personal.tipoid.tipoid == tipo.tipoid %}
+                                                {% else %}
+                                                    <option value="{{ tipo.id }}">{{ tipo.tipoid }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-xs-6">
+                                        <label>Numero de ID:</label>
+                                        <input class="form-control" name="editar_identificacion" value="" placeholder="" readonly="readonly" />
+                                    </div>
+                                    <div class="col-lg-5 col-md-5 col-xs-6">
+                                        <label>Lugar Expedicion:</label>
+                                        <input class="form-control" name="editar_lugar" value="" placeholder="" required />
+                                    </div>
+
+                                    <div class="col-lg-12 col-md-12 col-xs-12" style="padding-bottom: 10px">
+                                        <hr/>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-6 col-xs-6">
+                                        <label>Area:</label>
+                                        <select class="form-control" name="editar_area" required>
+                                            <option value="">Seleccione</option>
+                                            {% for area in area %}
+                                                {% if personal.area.area == area.area %}
+                                                {% else %}
+                                                    <option value="{{ area.id }}">{{ area.area }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-xs-6">
+                                        <label>Cargo:</label>
+                                        <select class="form-control" name="editar_cargo" required>
+                                            <option value="">Seleccione</option>
+                                            {% for cargo in cargo %}
+                                                {% if personal.cargo.cargo == cargo.cargo %}
+                                                {% else %}
+                                                    <option value="{{ cargo.id }}">{{ cargo.cargo }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-12 col-md-12 col-xs-12" style="padding-bottom: 10px">
+                                        <hr/>
+                                    </div>
+
+                                    <div class="col-lg-8 col-md-8 col-xs-6">
+                                        <label> Cambiar Foto:</label>
+                                        <input class="form-control" id="file-input" name="editar_imagen" type="file" />
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-xs-6">
+                                        <label>Estado:</label>
+                                        <input class="form-control" id="estado" name="editar_estado" type="checkbox" checked/>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4 col-12">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label>Foto actual:</label>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <img style="width: 114px" class="fotomedia" name="editar_imagen" src="" />
+                                    </div>
+                                    <div class="col-12">
+                                        <hr/>
+                                    </div>
+                                    <div class="col-12">
+                                        <label>Nueva foto:</label>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <img id="imgSalida" style="width: 114px" src="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer alert-warning">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-success btn-sm pull-right"><i class='fa fa-check'></i>&emsp;Guardar</button>
+                        </div>
+                    </div>
+                </form>
+			</div>
+		</div>
+	</div>
+</div>

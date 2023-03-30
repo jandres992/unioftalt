@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+    {% load static %}
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{{ request.session.empresa.n_app }}</title>
+
+        <link rel="shortcut icon" href="{% static 'img/logo.png' %}"/>
+
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/core/libs.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/hope-ui.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/custom.min.css' %}" />
+        <link rel="stylesheet" href="{% static 'icon/icofont/css/icofont.css' %}" />
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/modal_cargando.css' %}"/>
+        <style>
+            body{
+                overflow: hidden;
+                background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url("{% static 'img/empresa.png' %}");
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: cover;
+            }
+            .boxed-inner{
+                min-height: 700px !important;
+            }
+		</style>
+    </head>
+    <body>
+    {% include 'general/modal_cargando.html' %}
+        <div class="wrapper">
+            <section class="login-content">
+                <div class="row m-0 align-items-center vh-100">
+                    <div class="col-12">
+                        <div class="row justify-content-center">
+                            <div class="col-sm-10 col-12">
+                                <div class="card pb-3">
+                                    <nav class="main-header navbar navbar-expand navbar-white navbar-light ml-0 no_print p-0">
+                                        <div class="navbar-brand col-md-3 col-lg-3" id="logo">
+                                            <img width="240" src="{% static 'img/logo_ext.png' %}">
+                                        </div>
+                                        <div class="navbar-brand col-md-6 col-lg-6 text-center">
+                                            <h3 class="block-title">Aplicaciones</h3>
+                                        </div>
+                                    </nav>
+                                    <div class="card-body p-0">
+                                        <div class="row d-flex m-3">
+                                            <div class="col-sm-4 col-12">
+                                                <div class="card p-3 border-secondary border-1 mb-2" style="border-radius: 0px;">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="text-bold h5">TURNO DIGITAL</div>
+                                                        <span class="badge rounded-pill bg-soft-info ms-2">nuevo</span>
+                                                    </div>
+                                                    <br><br>
+                                                    <div class="mt-3">
+                                                        <div class="d-flex">Llamado de pacientes para los servicios de SIAU.</div>
+                                                        <div class="d-flex align-items-center">
+                                                            <small class="bold me-2">Consulta Externa</small>
+                                                        </div>
+                                                    </div>
+                                                    <a href="{% url 'dig_login' %}" class="btn btn-dark rounded-pill mt-3 w-100">
+                                                       <i class="icofont-check"></i>&emsp; Ingresar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-12">
+                                                <div class="card p-3 border-secondary border-1 mb-2" style="border-radius: 0px;">
+                                                    <div class="d-flex align-items-center">
+                                                      <div class="text-bold h5"><strong style="font-family: 'good times';">{{ request.session.empresa.n_app }}</strong> Dashboard </div>
+                                                      <span class="badge rounded-pill bg-soft-info ms-2">nuevo</span>
+                                                    </div>
+                                                    <br><br>
+                                                    <div class="mt-3">
+                                                        <div class="d-flex">Panel de administración de {{ request.session.empresa.n_app }}</div>
+                                                        <div class="d-flex align-items-center">
+                                                            <small class="bold me-2">Administración</small>
+                                                        </div>
+                                                    </div>
+                                                    <a href="{% url 'general_login' %}" class="btn btn-dark rounded-pill mt-3 w-100">
+                                                        <i class="icofont-check"></i>&emsp; Ingresar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 col-12">
+                                                <div class="card p-3 border-secondary border-1 mb-2" style="border-radius: 0px;">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="text-bold h5">LLamado de Consultorio</div>
+                                                        <span class="badge rounded-pill bg-soft-success ms-2">proximamente</span>
+                                                    </div>
+                                                    <br><br>
+                                                    <div class="mt-3">
+                                                        <div class="d-flex">Llamado por voz de los pacientes de la sala de espera</div>
+                                                        <div class="d-flex align-items-center">
+                                                            <small class="bold me-2">Cinsulta Externa</small>
+                                                        </div>
+                                                    </div>
+                                                    <a href="#" class="btn btn-dark rounded-pill mt-3 w-100 disabled">
+                                                        <i class="icofont-check"></i>&emsp; Ingresar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <footer class="footer fixed-bottom" style="background-color: transparent;">
+            <div class="footer-body text-center align-content-center justify-content-center">
+                © <script>document.write(new Date().getFullYear())</script>
+                {{ request.session.empresa.razon_social }}
+            </div>
+        </footer>
+        <script src="{% static 'dashboard/assets/js/core/libs.min.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/core/external.min.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/hope-ui.js' %}"></script>
+    <script>
+        $(document).ready(function (e) {
+            $('.btn').click(function (e) {
+                $('#gifModal').modal('show');
+            });
+        });
+    </script>
+    </body>
+</html>

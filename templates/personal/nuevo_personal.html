@@ -1,0 +1,81 @@
+<!-- Modal -->
+    <div class="modal fade" id="newpersonalModal" aria-labelledby="personaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content border-primary">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title text-white"><i class="icofont-users"></i>&emsp; Datos de empleado nuevo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% include "general/busq_persona.html" %}
+
+                    <hr class="m-1 p-1 mt-3 bg-primary">
+                    <h5 class="">&emsp;Datos Adicionales:</h5>
+                    <hr class="m-1 p-1 bg-primary">
+
+                    <form class="formulario" method="post" action="{% url 'personal' %}" enctype="multipart/form-data">{% csrf_token %}
+                        <div class="row">
+                            <div class="col-12" style="display: none;">
+                                <input type="text" name="id_pcte" value="" id="id_pcte">
+                            </div>
+                            <div class="col-sm-6 col-12 mt-2">
+                                <label class="control-label">Lugar de Expedicion: <span style="color:#0c802d;">*</span></label>
+                                <input class="form-control form-control-sm border-primary"  name="lugar_exp" type="text" placeholder="" required />
+                            </div>
+
+                            <div class="col-sm-6 col-12 mt-2">
+                                <label>Feacha de Ingreso: <span style="color:#0c802d;">*</span></label>
+                                <input type="date" data-date="" data-date-format="YYYY-MM-DD" name="f_ingr" class="form-control border-primary form-control-sm" required>
+                            </div>
+                            <div class="col-sm-6 col-12 mt-2">
+                                <label>Area: <span style="color:#0c802d;">*</span></label>
+                                <select class="form-select form-select-sm border-primary" name="area" required>
+                                    <option value="">Seleccione</option>
+                                    {% for area in area %}
+                                        <option value="{{ area.id }}">{{ area.area }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-6 col-12 mt-2">
+                                <label>Cargo: <span style="color:#0c802d;">*</span></label>
+                                <select class="form-select form-select-sm border-primary" name="cargo" required>
+                                    <option value="">Seleccione</option>
+                                    {% for c in cargo %}
+                                        <option value="{{ c.id }}">{{ c.cargo }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-6 col-12 mt-2">
+                                <label class="control-label">Nombre acudiente: <span style="color:#0c802d;">*</span></label>
+                                <input class="form-control form-control-sm border-primary"  name="acudiente" type="text" placeholder="" required />
+                            </div>
+                            <div class="col-sm-6 col-12 mt-2">
+                                <label class="control-label">Telefono: <span style="color:#0c802d;">*</span></label>
+                                <input class="form-control form-control-sm border-primary"  name="tel_acudiente" type="text" placeholder="" required />
+                            </div>
+                            <div class="col-sm-6 col-12 mt-2">
+                                <label class="control-label">EPS: <span style="color:#0c802d;">*</span></label>
+                                <input class="form-control form-control-sm border-primary"  name="eps" type="text" placeholder="" required />
+                            </div>
+                            <div class="col-sm-6 col-12 mt-2">
+                                <label>Foto:</label>
+                                <input type="file" id="file-input-new" name="imagen" value="Subir Foto" class="form-control form-control-sm border-primary"/>
+                            </div>
+                            <div class="col-12 text-center">
+                                <hr class="p-1 mt-3 bg-primary">
+                            </div>
+                            <div class="col-12 text-center">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="icofont-check"></i>&emsp;guardar
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal" >
+                                    <i class="icofont-close"></i>&emsp;cerrar &emsp;
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fin Modal -->

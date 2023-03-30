@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+    {% load static %}
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Llamado Paciente - {{ empresa.nombre }}</title>
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="{% static 'img/logo.jpg' %}"/>
+
+        <!-- Hope ui Library -->
+        <link rel="stylesheet" href="{% static 'assets/css/core/libs.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/css/hope-ui.css' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/css/custom.min.css' %}" />
+        <link rel="stylesheet" href="{% static 'icon/icofont/css/icofont.css' %}" />
+        <link rel="stylesheet" href="{% static 'notificacion/css/animate.css' %}" />
+        <style>
+            body{
+                overflow: hidden !important;
+            }
+            .scroll{
+                overflow-x: hidden;
+            }
+            .scroll::-webkit-scrollbar {
+                width: 12px;
+            }
+
+            .scroll::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+                border-radius: 10px;
+            }
+
+            .scroll::-webkit-scrollbar-thumb {
+                border-radius: 10px;
+                -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+            }
+        </style>
+    </head>
+    <body class="boxed-fancy">
+        <div class="boxed-inner">
+            <span class="screen-darken"></span>
+            <main class="main-content">
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <nav class="main-header navbar navbar-expand navbar-white navbar-light ml-0 no_print p-0">
+                            <div class="navbar-brand col-md-3 col-lg-3" id="logo">
+                                <img width="280" src="{% static 'img/logo_ext.png' %}">
+                            </div>
+                        </nav>
+
+                        <div class="content-wrapper p-2 mb-0 ml-0">
+                            <div class="col-12" style="padding-right: 0px;">
+                                <div class="card mb-0" style="background-color:black;">
+                                    <div class="card-body p-1">
+                                        <div id="publicidad">
+                                            <video id="video" controls muted playsinline preload="auto" style="width: 100%; height:640px; display:none;">
+                                                <source src="" type="video/mp4">
+                                            </video>
+                                            <img id="imagen" src="" style="width: 100%; height:640px; display:none;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 mt-2" style="padding-right: 0px;">
+                                <div class="card mb-0">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 col-md-4">
+                                                <h2 class="mb-1"><strong>Horario de Atención:</strong></h2>
+                                                <p class="mb-0 text-secondary" style="font-size: 13pt;">
+                                                    De 06:00 am a 6:00 pm
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-4">
+                                                <h2 class="mb-1"><strong>Contáctenos:</strong></h2>
+                                                <p class="mb-0 text-secondary" style="font-size: 13pt;">
+                                                    <strong>PBX:</strong> {{ empresa.tel }} <br>
+                                                    <strong>Whatsapp:</strong> 3170000000 - 3170000000<br>
+                                                </p>
+                                            </div>
+                                            <div class="col-12 col-md-4">
+                                                <p></p>
+                                                <p class="mb-0 text-secondary" style="font-size: 13pt;">
+                                                    <strong>Email:</strong> {{ empresa.email }}<br>
+                                                    <strong>Website:</strong> {{ empresa.web }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                   </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-sm-6 bg-primary text-center" style="padding-left: 0px !important;">
+                        <div class="col-12 p-0">
+                            <div class="card border-dark bg-primary">
+                                <div class="card-body p-0 bg-primary d-flex justify-content-around text-center text-white" style="font-size: 36pt;">
+                                    <div class="col-6 p-0">
+                                        <strong style="font-size: 20pt;">NOMBRE</strong>
+                                    </div>
+                                    <div class="col-6 p-0">
+                                        <strong style="font-size: 20pt;">CONSULTORIO</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 p-0" id="consultorios_proyect"></div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Modal -->
+            <div class="modal fade" id="llamado_pantalla" tabindex="-1" aria-labelledby="llamado_pantallaLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" style="max-width: 95%;" role="document">
+                    <div class="modal-content border-dark" style="border: solid 10px; border-radius: 40px;">
+                        <div class="modal-body justify-content-around text-center">
+                            <div class="row">
+                                <div class="col-12" style="display: none;">
+                                    <audio id="anuncio_llamado" src=""></audio>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 pt-3">
+                                        <a class="card bg-secondary">
+                                            <div class="card-body p-0">
+                                                <div class="d-flex flex-column text-center text-white align-items-center justify-content-between pt-3">
+                                                    <h1 class="text-white"><strong>LLAMADO DE CONSULTORIO</strong></h1>
+                                                    <div class="card-profile-progress mt-0">
+                                                        <div>
+                                                            <p class="mb-3">
+                                                                <strong style="font-size: 72pt !important; font-weight: 900;" id="pcteAnun"></strong>
+                                                            </p>
+                                                            <p class="mb-3">
+                                                                <strong style="font-size: 40pt !important; font-weight: 900;" id="consultorioAnun"></strong>
+                                                            </p>
+                                                            <p class="mb-3">
+                                                                <strong style="font-size: 40pt !important;" id="pisoAnun"></strong>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer fixed-bottom">
+                <div class="footer-body">
+                    <ul class="left-panel list-inline mb-0 p-0"></ul>
+                    <div class="right-panel">
+                        ©<script>document.write(new Date().getFullYear())</script> {{ empresa.razon_social }}
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <script src="{% static 'assets/js/core/libs.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/external.min.js' %}"></script>
+        <script src="{% static 'assets/js/hope-ui.js' %}"></script>
+        <script src="{% static 'notificacion/bootstrap_notify/bootstrap-notify.js' %}"></script>
+        <script src="{% static 'notificacion/js/notificacion.js' %}"></script>
+        <script>
+            $(window).ready(function(){
+                const session_pantalla = new WebSocket(`ws://${window.location.host}/ws/pantalla_consult/`)
+
+                session_pantalla.onmessage = function(e) {
+                    const data = JSON.parse(e.data);
+                    console.log(data);
+                    if (data.tipo == "publicidad"){
+                        localStorage.setItem('actual_publicidad', data.data.order)
+                        if(data.data.t_publ == "video" ) {
+                            let video = $("#video")[0];
+                            video.src = '/media/publicidad/video/' + data.data.publicidad;
+                            video.load();
+                            videoS = video.play();
+                            $("#video").show();
+                            $("#imagen").hide();
+                            if (videoS !== undefined) {
+                                videoS.then(_ => {
+                                    video.play();
+                                    $("video").prop('muted', false);
+                                    $("video").prop("volume", 0.25);
+                                })
+                                .catch(error => {
+                                    console.log('error')
+                                });
+                            }
+                        }else{
+                            $("#imagen").attr('src', "/media/publicidad/img/" + data.data.publicidad);
+                            $("#imagen").show();
+                            $("#video").hide();
+                        }
+                    } else if (data.tipo == "llamado_pcte"){
+                        let datos = data.data.data;
+                        if (datos.ind == '2') {
+                            for (var i = 0, limit = (datos.lista).length; i < limit; i++) {
+                                if (datos.lista[i].ult_llamado == true){
+                                    $('#llamado_pantalla .bg-secondary').removeClass('bg-secondary').addClass('bg-danger');
+                                    $('#llamado_pantalla .modal-content').removeClass('border-dark').addClass('border-danger');
+                                } else {
+                                    $('#llamado_pantalla .bg-primary').removeClass('bg-danger').addClass('bg-secondary');
+                                    $('#llamado_pantalla .modal-content').removeClass('border-danger').addClass('border-dark');
+                                }
+
+                                $('#llamado_pantalla .modal-content p strong').text("");
+                                $('#pcteAnun').text(datos.lista[i].pcte);
+                                $('#consultorioAnun').text(datos.lista[i].consultorio);
+                                $('#pisoAnun').text("Piso " + datos.lista[i].piso);
+
+                                $('#llamado_pantalla').modal("show");
+                                $("#anuncio_llamado").removeAttr('src');
+                                $("#anuncio_llamado").prop('src', datos.lista[i].audio);
+                                anuncio_llamado.play();
+
+                                setTimeout(function () {
+                                    $('#llamado_pantalla').modal("hide");
+                                }, 6000);
+                            }
+                        }
+                    } else {
+                        if (data.tipo == "consultorios") {
+                            let datos = data.data.lista;
+                            if (datos == undefined){
+                                datos = data.data.data;
+                            }
+
+                            $("#consultorios_proyect").empty();
+                            for (var i = 0, limit = datos.length; i < limit; i++) {
+                                $("#consultorios_proyect").append(' \
+                                    <div class="card mb-1 p-0 bg-primary"> \
+                                        <div class="card-body p-0 border-light bg-primary d-flex justify-content-around text-center text-white"> \
+                                            <div class="col-6 p-0" style="font-size:28pt;"> \
+                                                <strong><i class="icofont-user"></i> ' + datos[i].pcte + '</strong> \
+                                            </div> \
+                                            <div class="col-6 p-0" style="font-size: 28pt;"> \
+                                                <strong><i class="icofont-building"></i> ' + datos[i].consultorio + '<br>Piso ' + datos[i].piso + '</strong> \
+                                            </div> \
+                                        </div> \
+                                    </div>');
+                            }
+                        }
+                    }
+                }
+
+                $("#video").on('ended', function (e){
+                    session_pantalla.send(JSON.stringify({
+                        "tipo": "publicidad",
+                        "order": localStorage.getItem('actual_publicidad')
+                    }))
+                });
+
+                setInterval( function() {
+                    if (! $("#imagen").is(':hidden')){
+                        session_pantalla.send(JSON.stringify({
+                            "tipo": "publicidad",
+                            "order": localStorage.getItem('actual_publicidad')
+                        }))
+                    }
+                }, 15000);
+
+                session_pantalla.onclose = function(e) {
+                    window.location.reload();
+                };
+            });
+        </script>
+    </body>
+</html>

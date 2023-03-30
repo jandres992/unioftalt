@@ -1,0 +1,308 @@
+{% load static %}
+{% load l10n %}
+<aside class="sidebar sidebar-default navs-rounded-all ">
+    <div class="sidebar-header d-flex align-items-center justify-content-start">
+    <a href="{% url 'general_menu' %}" class="navbar-brand d-flex justify-content-center align-items-center p-1">
+            <img src="{% static 'img/logo.png' %}" style="width:65px; margin: 5px;" class="p-0">
+            <h5 class="logo-title pt-1 ml-0" style="font-family: 'good times'; font-weight: 900;">{{ request.session.empresa.n_app }}</h5>
+        </a>
+        <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
+            <i class="icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M4.25 12.2744L19.25 12.2744" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M10.2998 18.2988L4.2498 12.2748L10.2998 6.24976" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </i>
+        </div>
+    </div>
+    <div class="sidebar-body pt-0 data-scrollbar">
+        <div class="sidebar-list">
+            <ul class="navbar-nav iq-main-menu" id="sidebar-menu">
+                <li class="nav-item static-item">
+                    <a class="nav-link static-item disabled" href="#" tabindex="-1">
+                        <span class="default-icon">General</span>
+                        <span class="mini-icon"> <i class="icofont-database"></i> </span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" id="menu" aria-current="page" href="{% url 'general_menu' %}" data-bs-toggle="tooltip" data-bs-placement="right" title="Menú principal">
+                        <i class="icon">
+                            <svg width="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path opacity="0.4" d="M16.0756 2H19.4616C20.8639 2 22.0001 3.14585 22.0001 4.55996V7.97452C22.0001 9.38864 20.8639 10.5345 19.4616 10.5345H16.0756C14.6734 10.5345 13.5371 9.38864 13.5371 7.97452V4.55996C13.5371 3.14585 14.6734 2 16.0756 2Z" fill="currentColor"></path>
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M4.53852 2H7.92449C9.32676 2 10.463 3.14585 10.463 4.55996V7.97452C10.463 9.38864 9.32676 10.5345 7.92449 10.5345H4.53852C3.13626 10.5345 2 9.38864 2 7.97452V4.55996C2 3.14585 3.13626 2 4.53852 2ZM4.53852 13.4655H7.92449C9.32676 13.4655 10.463 14.6114 10.463 16.0255V19.44C10.463 20.8532 9.32676 22 7.92449 22H4.53852C3.13626 22 2 20.8532 2 19.44V16.0255C2 14.6114 3.13626 13.4655 4.53852 13.4655ZM19.4615 13.4655H16.0755C14.6732 13.4655 13.537 14.6114 13.537 16.0255V19.44C13.537 20.8532 14.6732 22 16.0755 22H19.4615C20.8637 22 22 20.8532 22 19.44V16.0255C22 14.6114 20.8637 13.4655 19.4615 13.4655Z" fill="currentColor"></path>
+                            </svg>
+                        </i>
+                        <span class="item-name">Menú</span>
+                    </a>
+                </li>
+
+                <li>
+                    <hr class="hr-horizontal">
+                </li>
+
+                {% for g in request.user.groups.all %}
+                    {% if g.name == "menu digiturno" %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="menu_digiturno" data-bs-toggle="collapse" href="#digiturno-menu" role="button" aria-expanded="false" aria-controls="digiturno-menu">
+                                <strong data-bs-toggle="tooltip" data-bs-placement="right" title="Menú Turnos"><i class="icofont-ticket" style="font-size: 18pt !important;"></i></strong>
+                                <span class="item-name">Turno Digital</span>
+                                <i class="right-icon">
+                                    <svg width="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </i>
+                            </a>
+                            {% for g in request.user.groups.all %}
+                                <ul class="sub-nav collapse" id="digiturno-menu" data-bs-parent="#sidebar-menu">
+                                    {% if g.name == "digiturno reporte diario" %}
+                                        <li class="nav-item">
+                                            <a class="nav-link " href="{% url 'dig_admin' %}" data-bs-toggle="tooltip" data-bs-placement="right" title="Reporte de turnos">
+                                                <i class="icon">
+                                                    <svg width="10" viewBox="0 0 24 24" fill="currentColor">
+                                                        <g><circle cx="12" cy="12" r="8" fill="currentColor"></circle></g>
+                                                    </svg>
+                                                </i>
+                                                <i class="sidenav-mini-icon"> <i class="icofont-ui-user-group"> </i></i>
+                                                <span class="item-name"> Reporte </span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if g.name == "digiturno llamado paciente" %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'dig_llamado_consultorio' %}" data-bs-toggle="tooltip" data-bs-placement="right" title="Llamado consultorio paciente">
+                                                <i class="icon">
+                                                    <svg width="10" viewBox="0 0 24 24" fill="currentColor">
+                                                        <g>
+                                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                                        </g>
+                                                    </svg>
+                                                </i>
+                                                <i class="sidenav-mini-icon"> <i class="icofont-search-user"></i> </i>
+                                                <span class="item-name"> Llamado pcte</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            {% endfor %}
+                        </li>
+                        <li>
+                            <hr class="hr-horizontal">
+                        </li>
+                    {% endif %}
+
+                    {% if g.name == "menu personal" %}
+                        <li class="nav-item">
+                            <a class="nav-link" id="menu_personal" data-bs-toggle="collapse" href="#personal-menu" role="button" aria-expanded="false" aria-controls="personal-menu">
+                                <strong data-bs-toggle="tooltip" data-bs-placement="right" title="Menú Personal"><i class="icofont-users-social" style="font-size: 18pt !important;"></i></strong>
+                                <span class="item-name">Personal</span>
+                                <i class="right-icon">
+                                    <svg width="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </i>
+                            </a>
+                            {% for g in request.user.groups.all %}
+                                <ul class="sub-nav collapse" id="personal-menu" data-bs-parent="#personal-menu">
+                                    {% if g.name == "personal ini" %}
+                                        <li class="nav-item">
+                                            <a class="nav-link " href="{% url 'personal' %}" data-bs-toggle="tooltip" data-bs-placement="right" title="Gestión de información">
+                                                <i class="icon">
+                                                    <svg width="10" viewBox="0 0 24 24" fill="currentColor">
+                                                        <g><circle cx="12" cy="12" r="8" fill="currentColor"></circle></g>
+                                                    </svg>
+                                                </i>
+                                                <i class="sidenav-mini-icon"> <i class="icofont-file-excel"></i> </i>
+                                                <span class="item-name"> Gestión </span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            {% endfor %}
+                        </li>
+                        <li>
+                            <hr class="hr-horizontal">
+                        </li>
+                    {% endif %}
+
+                    {% if g.name == 'citas medicas menu' %}
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" id="menu_citas"
+                               href="#sidebar-citas_medicas" role="button" aria-expanded="false" aria-controls="sidebar-citas_medicas">
+                                <strong data-bs-toggle="tooltip" data-bs-placement="right" title="Menú Citas Médicas"><i class="icon icofont-architecture icon-2x"></i></strong>
+                                <span class="item-name">Citas Médicas</span>
+                                <i class="right-icon icofont-simple-right icon-2x"></i>
+                            </a>
+                            <ul class="sub-nav collapse" id="sidebar-citas_medicas" data-bs-parent="#sidebar-citas_medicas">
+                                {% for m in request.user.groups.all %}
+                                    {% if m.name == 'solicitud formulario citas' %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'form_atencion_cita' %}" data-bs-toggle="tooltip" data-bs-placement="right" title="Formulario solicitudes citas médicas">
+                                                <i class="icon">
+                                                    <svg width="10" viewBox="0 0 24 24" fill="currentColor">
+                                                        <g>
+                                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                                        </g>
+                                                    </svg>
+                                                </i>
+                                                <i class="sidenav-mini-icon"><i class="icofont-question"></i></i>
+                                                <span class="item-name"> Sol. Citas Presencial </span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% if m.name == 'listado citas' %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'recordatorio_citas' %}" data-bs-toggle="tooltip" data-bs-placement="right" title="Recordatorio Citas">
+                                                <i class="icon">
+                                                    <svg width="10" viewBox="0 0 24 24" fill="currentColor">
+                                                        <g>
+                                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                                        </g>
+                                                    </svg>
+                                                </i>
+                                                <i class="sidenav-mini-icon"><i class="icofont-send-mail"></i></i>
+                                                <span class="item-name"> Recordatorio Citas Médicas </span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% if m.name == 'listado citas' %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'solicitud_whatsapp' %}" data-bs-toggle="tooltip" data-bs-placement="right" title="Panel solicitudes citas médicas">
+                                                <i class="icon">
+                                                    <svg width="10" viewBox="0 0 24 24" fill="currentColor">
+                                                        <g>
+                                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                                        </g>
+                                                    </svg>
+                                                </i>
+                                                <i class="sidenav-mini-icon"><i class="icofont-whatsapp"></i></i>
+                                                <span class="item-name"> Panel Citas Médicas </span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% if m.name == 'listado citas' %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'sol_gen_cmedicas' %}" data-bs-toggle="tooltip" data-bs-placement="right" title="Notificaciones enviadas citas médicas">
+                                                <i class="icon">
+                                                    <svg width="10" viewBox="0 0 24 24" fill="currentColor">
+                                                        <g>
+                                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                                        </g>
+                                                    </svg>
+                                                </i>
+                                                <i class="sidenav-mini-icon"><i class="icofont-library"></i></i>
+                                                <span class="item-name"> Notificación Envio</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% if m.name == 'listado citas' %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'sol_cmedicas_des' %}" data-bs-toggle="tooltip" data-bs-placement="right" title="Solicitudes citas médicas descartadas">
+                                                <i class="icon">
+                                                    <svg width="10" viewBox="0 0 24 24" fill="currentColor">
+                                                        <g>
+                                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                                        </g>
+                                                    </svg>
+                                                </i>
+                                                <i class="sidenav-mini-icon"><i class="icofont-close"></i></i>
+                                                <span class="item-name"> Sol. Descartadas </span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li>
+                            <hr class="hr-horizontal">
+                        </li>
+                    {% endif %}
+                    {% if g.name == 'esalud menu' %}
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" id="menu_esalud"
+                               href="#sidebar-esalud" role="button" aria-expanded="false" aria-controls="sidebar-esalud" title="Menú E-Salud">
+                                <strong data-bs-toggle="tooltip" data-bs-placement="right" title="Menú E-Salud"><i class="icon icofont-ui-browser icon-2x"></i></strong>
+                                <span class="item-name">E-Salud</span>
+                                <i class="right-icon icofont-simple-right icon-2x"></i>
+                            </a>
+                            <ul class="sub-nav collapse" id="sidebar-esalud" data-bs-parent="#sidebar-esalud">
+                                {% for m in request.user.groups.all %}
+                                    {% if m.name == 'detallado servicios esalud' %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'detalladoServ' %}" data-bs-toggle="tooltip" data-bs-placement="right" title="Detallado de servicios">
+                                                <i class="icon">
+                                                    <svg width="10" viewBox="0 0 24 24" fill="currentColor">
+                                                        <g>
+                                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                                        </g>
+                                                    </svg>
+                                                </i>
+                                                <i class="sidenav-mini-icon"><i class="icofont-database-add"></i></i>
+                                                <span class="item-name"> Detallado Servicios </span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    {% if m.name == 'actualizacion paciente esalud' %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'act_pcte_esalud' %}" data-bs-toggle="tooltip" data-bs-placement="right" title="Actualización de datos paciente e-salud">
+                                                <i class="icon">
+                                                    <svg width="10" viewBox="0 0 24 24" fill="currentColor">
+                                                        <g>
+                                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                                        </g>
+                                                    </svg>
+                                                </i>
+                                                <i class="sidenav-mini-icon"><i class="icofont-users"></i></i>
+                                                <span class="item-name"> Actualización datos </span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li>
+                            <hr class="hr-horizontal">
+                        </li>
+                    {% endif %}
+                    {% if g.name == 'sistema menu' %}
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" id="menu_sistema"
+                               href="#sidebar-sistema" role="button" aria-expanded="false" aria-controls="sidebar-sistema">
+                                <strong data-bs-toggle="tooltip" data-bs-placement="right" title="Menú Sistema"><i class="icon icofont-ui-settings icon-2x"></i></strong>
+                                <span class="item-name">Sistema</span>
+                                <i class="right-icon icofont-simple-right icon-2x"></i>
+                            </a>
+                            <ul class="sub-nav collapse" id="sidebar-sistema" data-bs-parent="#sidebar-sistema">
+                                {% for m in request.user.groups.all %}
+                                    {% if m.name == 'usuario sistema' %}
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{% url 'system_user' %}" data-bs-toggle="tooltip" data-bs-placement="right" title="Gestión de Usuarios {{ request.session.empresa.n_app }}">
+                                                <i class="icon">
+                                                    <svg width="10" viewBox="0 0 24 24" fill="currentColor">
+                                                        <g>
+                                                        <circle cx="12" cy="12" r="8" fill="currentColor"></circle>
+                                                        </g>
+                                                    </svg>
+                                                </i>
+                                                <i class="sidenav-mini-icon"><i class="icofont-search-user"></i></i>
+                                                <span class="item-name"> Usuarios </span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <li>
+                            <hr class="hr-horizontal">
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="sidebar-footer"></div>
+</aside>

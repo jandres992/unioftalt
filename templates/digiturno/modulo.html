@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+    {% load static %}
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Módulo Turno Digital - {{ request.session.empresa.n_app }}</title>
+        <link rel="shortcut icon" href="{% static 'img/logo.png' %}"/>
+
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/core/libs.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/hope-ui.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/custom.min.css' %}" />
+        <link rel="stylesheet" href="{% static 'icon/icofont/css/icofont.css' %}" />
+        <link rel="stylesheet" href="{% static 'notificacion/css/animate.css' %}" />
+        <style>
+            body{
+                overflow-x: hidden !important;
+            }
+
+            .scroll{
+                overflow-x: hidden !important;
+            }
+            .scroll::-webkit-scrollbar {
+                width: 10px;
+            }
+
+            .scroll::-webkit-scrollbar-track {
+                -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+                border-radius: 8px;
+            }
+
+            .scroll::-webkit-scrollbar-thumb {
+                border-radius: 8px;
+                -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+            }
+
+            .type-off{
+                position: absolute;
+                padding: 9px 25px;
+                bottom: -24px;
+                left: 50%;
+                -webkit-transform: translateX(-50%);
+                -ms-transform: translateX(-50%);
+                transform: translateX(-50%);
+                font-weight: 500;
+                width: 65%;
+            }
+
+            .type{
+                width: 60%;
+                font-size: 9pt;
+            }
+
+            .cards{
+                border-radius: 20% 2%;
+            }
+
+            #turno_flotante button{
+                width: 50% !important;
+            }
+
+            #turno_flotante{
+                width: 20%;
+                position: absolute;
+                z-index: 6000;
+                top:8px;
+                right: 20%;
+            }
+
+            @media screen and (max-width: 1200px) {
+                #atencion_flotante {
+                    width: 30%;
+                }
+            }
+
+            @media screen and (min-width: 1201px) {
+                #atencion_flotante {
+                    width: 25%;
+                }
+            }
+            #atencion_flotante .col-12 .card .card-body strong{
+                font-size: 26pt;
+            }
+
+            #atencion_flotante{
+                border-left: 3px solid #262626;
+                position: absolute;
+                z-index: 20000;
+                top:0px;
+                right: 0px !important;
+                height: 100%;
+            }
+
+            .atender{
+                border-radius: 5px;
+            }
+            .boxed {
+                background: #262626;
+            }
+        </style>
+    </head>
+    <body class="boxed">
+        {% include 'general/modal_cargando.html' %}
+        <div id="atencion_flotante" class="row" style="display: none;">
+            <button class="btn btn-close" style="position: absolute;top: 3px; right: 3px; z-index: 20001;" onclick="$('#atencion_flotante').hide();"></button>
+            <div class="bg-secondary text-center">
+                <div class="col-12 p-0">
+                    <div class="card border-dark bg-transparent">
+                        <div class="card-body p-0 d-flex justify-content-around text-center text-white bg-transparent">
+                            <div class="col-6 p-0">
+                                <strong>Turno</strong>
+                            </div>
+                            <div class="col-6 p-0">
+                                <strong>Módulo</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 p-0" id="modulos_proyect"></div>
+            </div>
+        </div>
+
+        <div id="turno_flotante" class="text-center">
+            <label style="color:white; width: 100%; font-weight: 900;">Llamado paciente</label>
+            <div class="row">
+                <button style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;" id="llamado" value="" class='btn btn-secondary btn-sm btn-llamado'>
+                    <i class="icofont-ticket"></i> Turno&nbsp;<br><strong><span></span></strong>
+                </button>
+                <button style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;" id="r_llamado" value="" class='btn btn-primary btn-sm btn-llamado'>
+                    <i class="icofont-user"></i> Nombre&nbsp;<br><strong><span></span></strong>
+                </button>
+            </div>
+        </div>
+
+        <div class="boxed-inner">
+            <span class="screen-darken"></span>
+            <main class="main-content">
+                <nav class="nav navbar navbar-expand-lg navbar-light iq-navbar">
+                    <div class="container-fluid navbar-inner text-sm-center">
+                        <a href="#" class="logo-center navbar-brand col-md-3 col-lg-3 ms-0">
+                            <img width="170" src="{% static 'img/logo_ext.png' %}">
+                        </a>
+                        <a href="#" class="text-center col-md-5 col-lg-5">
+                            <h4 class="logo-title" style="font-family: 'good times'; font-weight: 900;">Módulo {{ modulo }} - Turno Digital</h4>
+                        </a>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link py-0 d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src="{{ request.session.avatar }}" alt="User-Profile" class="theme-color-default-img img-fluid avatar avatar-50 avatar-rounded">
+                                        <div class="caption ms-3 ">
+                                            <h6 class="mb-0 caption-title">{{ request.user.first_name }}</h6>
+                                            <p class="mb-0 caption-sub-title">{{ request.user.last_name }}</p>
+                                        </div>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <li>
+                                            <a class="dropdown-item" onclick="$('#atencion_flotante').show(); return false;">Turnos llamados</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <!--li>
+                                            <a class="dropdown-item" id="estadistica_btn">Productividad</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li-->
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'dig_logout' %}">Salir</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="conatiner-fluid p-4 pb-0">
+                    <div class="row">
+                        <div class="col-md-12 col-lg-12 modulos">
+                            <input id="no_modulo" style="display: none;" value="{{ modulo }}">
+                            <div class="row mb-0 text-center">
+                                {% for s in servicios %}
+                                    <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 col-xxl-3 mb-5 mb-sm-5 mb-md-2">
+                                        <div class="card mb-sm-5 cards" id="card-{{ s.id }}">
+                                            <div class="prc-box bg-soft-dark cards" style="border: solid 1px;">
+                                                <div class="card-body lista_turnos mt-5 mb-5 p-1 scroll" id="list-{{ s.id }}" style="overflow-y: scroll; height: 200px;"></div>
+                                                <span class="type bg-dark p-1 mb-2">
+                                                    <strong>{{ s.servicio }}</strong><br>
+                                                    <small id="tp-{{ s.id }}" class="cont_text">0</small>
+                                                </span>
+                                                <button value="{{ s.id }}" type="button" class="type-off btn-dark p-2 atender">
+                                                    <strong><i class="icofont-ticket"></i> Atender</strong>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 col-xxl-3 mb-5 mb-sm-5 mb-md-2">
+                                    <div class="card mb-sm-5 cards" id="card-preferencial">
+                                        <div class="prc-box bg-soft-primary cards" style="border: solid 1px;">
+                                            <div class="card-body lista_turnos mt-5 p-1 mb-5 scroll" id="list-preferencial" style="overflow-y: scroll; height: 220px;"></div>
+                                            <span class="type bg-primary p-1">
+                                                <strong>TURNO PREFERENCIAL</strong><br>
+                                                <small id="tp-preferencial" class="cont_text">0</small>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <div class="footer-body">
+                    <div class="col-12 text-center">
+                        ©<script>document.write(new Date().getFullYear())</script> {{ empresa.razon_social }}
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <script src="{% static 'dashboard/assets/js/core/libs.min.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/core/external.min.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/hope-ui.js' %}"></script>
+        <script src="{% static 'notificacion/bootstrap_notify/bootstrap-notify.js' %}"></script>
+        <script src="{% static 'notificacion/js/notificacion.js' %}"></script>
+        <script>
+            $(document).ready(function (e){
+                $(".atender").hover(
+                    function () {
+                        $(this).css("background-color","white");
+                        $(this).addClass("text-dark");
+                    }, function (){
+                        $(this).removeAttr("style");
+                        $(this).removeClass("text-dark");
+                    }
+                );
+
+                const session = new WebSocket(`ws://${window.location.host}/ws/modulo/`)
+
+                session.onmessage = function(e) {
+                    const data = JSON.parse(e.data);
+                    if (data.tipo == "turnos") {
+                        let turnos = data.data;
+                        $(".lista_turnos").empty();
+                        $(".cont_text").text("0");
+                        for (var i = 0, limit = (turnos).length; i < limit; i++) {
+                            let no_turno = turnos[i].no_turno;
+                            if (no_turno < 10) {
+                                no_turno = "00" + no_turno;
+                            } else if (no_turno < 100) {
+                                no_turno = "0" + no_turno;
+                            }
+
+                            if (turnos[i].general == true) {
+                                let cont = $("#tp-" + turnos[i].servicio_id).text();
+                                $('#list-' + turnos[i].servicio_id).append(' \
+                                    <a class="card p-0" style="margin-right:12px; margin-bottom: 5px; color: black !important;" id="' + turnos[i].id + '"> \
+                                        <div class="card-body p-0"> \
+                                            <div class="progress-widget"> \
+                                                <div class="text-center p-2"> \
+                                                    <h3 class="counter" style="font-weight: 900;">' + no_turno + '</h3> \
+                                                </div> \
+                                                <div class="progress-detail" style="margin-left: 10px; text-align: left !important;"> \
+                                                    <p class="mb-0" style="font-weight: 800;">Paciente:</p> \
+                                                    <p class="mb-0" style="font-size:10pt;">' + turnos[i].pcte + '</p> \
+                                                    <hr class="m-0" >\
+                                                    <p class="mb-0" style="font-weight: 800;">Hora de llegada:</p> \
+                                                    <p class="mb-0" style="font-size:10pt;">' + turnos[i].fecha + '</p> \
+                                                </div> \
+                                            </div> \
+                                        </div> \
+                                    </a>');
+                                $("#tp-" + turnos[i].servicio_id).text(parseInt(cont) + 1);
+                            } else {
+                                $('#list-preferencial').append(' \
+                                    <a class="card bg-primary p-0 atenderP" style="margin-right:12px; margin-bottom: 5px;" id="' + turnos[i].id + '"> \
+                                        <div class="card-body p-0 text-white"> \
+                                            <div class="progress-widget"> \
+                                                <div class="text-center p-2"> \
+                                                    <h3 class="counter text-white" style="font-weight: 900;">' + no_turno + '</h3> \
+                                                </div> \
+                                                <div class="progress-detail" style="margin-left: 10px; text-align: left !important;"> \
+                                                    <p class="mb-0" style="font-weight: 800;">Paciente:</p> \
+                                                    <p class="mb-0" style="font-size:10pt;">' + turnos[i].pcte + '</p> \
+                                                    <hr class="m-0" >\
+                                                    <p class="mb-0" style="font-weight: 800;">Hora de llegada:</p> \
+                                                    <p class="mb-0" style="font-size:10pt;">' + turnos[i].fecha + '</p> \
+                                                </div> \
+                                            </div> \
+                                            <hr class="p-0 m-0"> \
+                                            <p class="mb-0" style="font-size:10pt; font-weight: 900;"> \
+                                                ' + turnos[i].servicio_text + ' \
+                                            </p> \
+                                        </div> \
+                                    </a>');
+                                $('#tp-preferencial').text($('#list-preferencial a').length);
+                            }
+                        }
+                    } else if(data.tipo == "llamado"){
+                        $('#' + data.data.id_turno).remove();
+                        if (data.data.general == true) {
+                            $("#tp-" + data.data.servicio_id).text(parseInt($("#tp-" + data.data.servicio_id).text())-1);
+                        }else{
+                            $('#tp-preferencial').text($('#list-preferencial a').length);
+                        }
+                        if (data.data.user == {{ request.user.id }}){
+                            notificacion(1,"Turno <strong>"+ data.data.turno +"</strong> llamado.");
+                            $('.btn-llamado span').text(data.data.turno);
+                            $('.btn-llamado').prop('value',data.data.id_turno);
+                            $.get("{% url 'dig_llamado_turno' %}", function (data, status){
+                                console.log(`${data}`);
+                            });
+                        }
+                    }else if (data.tipo == "modulos") {
+                        let datos = data.data.data;
+                        if (datos == undefined){
+                            datos = data.data;
+                        }
+                        $("#modulos_proyect").empty();
+                        for (var i = 0, limit = datos.length; i < limit; i++) {
+                            let no_turno = datos[i].turno;
+
+                            $("#modulos_proyect").append(' \
+                                <div class="card mb-1 p-0 bg-transparent"> \
+                                    <div class="card-body p-0 bg-transparent d-flex justify-content-around text-center text-white"> \
+                                        <div class="col-6 p-0 bg-transparent" style="font-size:28pt;"> \
+                                            <strong class="turno"><i class="icofont-ticket-alt"></i> ' + no_turno + '</strong> \
+                                        </div> \
+                                        <div class="col-6 p-0 bg-transparent" style="font-size:28pt;"> \
+                                            <strong class="modulo"><i class="icofont-users-alt-4"></i> ' + datos[i].modulo + '</strong> \
+                                        </div> \
+                                    </div> \
+                                </div>');
+                        }
+                    } else {
+                        notificacion(data.data.ind, data.data.aviso);
+                    }
+                    $("#gifModal").modal("hide");
+                };
+
+                session.onclose = function(e) {
+                    window.location.reload();
+                };
+
+                /*window.addEventListener("beforeunload", function (e) {
+                    var confirmationMessage = "Desea salir?, realizarlo a travez del ménu o la opción salir";
+                    (e || window.event).returnValue = confirmationMessage;
+                    return confirmationMessage;
+                });*/
+
+                $("#data_user").click(function(e) {
+                    $("#pcteModal").modal("show");
+                });
+
+                $(".atender").click(function(e) {
+                    if($(this).attr("disabled") != 'disabled') {
+                        $("#gifModal").modal("show");
+                        if ($("#tp-" + $(this).val()).text() != 0) {
+                            $(".atender").attr('disabled', 'disabled');
+                            setTimeout(function (e) {
+                                $(".atender").removeAttr('disabled');
+                            }, 6000);
+                            session.send(JSON.stringify({
+                                'tipo': "llamado",
+                                'servicio': $(this).val(),
+                                'modulo': $("#no_modulo").val()
+                            }))
+                        } else {
+                            $("#gifModal").modal("hide");
+                            notificacion(0, "No hay turnos por atender");
+                        }
+                    }
+                });
+
+
+                $('body #list-preferencial').on('click','a',function (e) {
+                    if($(this).attr("disabled") != 'disabled') {
+                        $("#gifModal").modal("show");
+                        $(".atender").attr('disabled', 'disabled');
+                        $('body #list-preferencial a').attr('disabled', 'disabled');
+                        setTimeout(function (e) {
+                            $(".atender").removeAttr('disabled');
+                            $('body #list-preferencial a').removeAttr('disabled');
+                        }, 5000);
+                        if ($("#no_modulo").val() != "" && $("#tp-preferencial").text() != 0) {
+                            session.send(JSON.stringify({
+                                'tipo': "llamado",
+                                'servicio': "",
+                                'id_turno': $(this).attr('id'),
+                                'modulo': $("#no_modulo").val()
+                            }))
+                        }
+                    }
+                });
+
+
+                $(".btn-llamado").click(function (e) {
+                    if ($("#no_modulo").val() != "" && $(this).val() != ""){
+                        let accion = $(this).attr('id');
+                        session.send(JSON.stringify({
+                            'tipo': "llamado",
+                            'servicio': "",
+                            'accion': accion,
+                            'id_turno': $(this).val(),
+                            'modulo': $("#no_modulo").val()
+                        }))
+                        $(".btn-llamado").attr('disabled', 'disabled');
+                        setTimeout(function (e) {
+                            $(".btn-llamado").removeAttr('disabled');
+                        }, 6000);
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

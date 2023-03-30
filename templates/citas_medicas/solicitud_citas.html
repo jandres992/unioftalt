@@ -1,0 +1,433 @@
+{% extends 'dashboard.html' %}
+
+{% load static %}
+
+{% block titulo %}
+    Solicitud de citas
+{% endblock %}
+
+{% block pagina %}
+    {{ titulo_proceso }} - Citas Médicas
+{% endblock %}
+
+{% block style %}
+    <style type="text/css">
+        td {
+            white-space: normal !important;
+        }
+        #datatable td {
+            white-space: normal !important;
+            margin: 8px;
+            padding: 2px;
+        }
+        #datatable th {
+            padding: 2px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block modal %}
+    {% include 'general/modal_cargando.html' %}
+{% endblock %}
+
+{% block content %}
+    <!-- Modal -->
+    <div class="modal fade" id="view_imgModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content border-primary">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white" id="staticBackdropLabel"><i class="icofont-file-image"></i>&emsp;Imagenes enviadas por el usuario</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6 d-flex justify-content-center">
+                            <div class="card border-primary" style="width: 70%;">
+                                <img src="" class="card-img-top" id="orden_imgModal">
+                                <div class="card-body bg-primary text-white">
+                                    <p class="card-text">Orden Médica</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-center">
+                            <div class="card border-primary" style="width: 70%;">
+                                <img src="" class="card-img-top" id="aut_imgModal">
+                                <div class="card-body bg-primary text-white">
+                                    <p class="card-text">Autorización EPS</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="solCitaModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" >
+            <div class="modal-content border-primary">
+                <div class="modal-header bg-primary">
+                    <h4 class="modal-title text-white"><i class="icofont-file-excel"></i>&emsp;Solicitud de cita médica</h4>
+                    <button type="button" class="btn btn-cerrar" data-bs-dismiss="modal" aria-label="Close"><i class="icofont-close"></i> </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xl-10 col-lg-9 col-md-9 col-12">
+                        <h3>Información del paciente:</h3>
+                    </div>
+
+                    <div class="col-12"><hr></div>
+                    <div class="col-12" id="paciente" style="color: black"></div>
+                    <div class="col-12"><hr></div>
+
+                    <div class="table table-responsive">
+                        <table style="font-size: 10pt !important;" id="datatable1" class="table table-striped">
+                            <thead class="text-center">
+                                <tr style="font-size: 7.5pt;" class="text-white bg-primary border-primary">
+                                    <th class="border-primary" scope="col">Fecha Cita</th>
+                                    <th class="border-primary" scope="col">Convenio</th>
+                                    <th class="border-primary" scope="col">Especialidad</th>
+                                    <th class="border-primary" scope="col">Telefono</th>
+                                    <th class="border-primary" scope="col">Enviar<br>Notificación</th>
+                                </tr>
+                            </thead>
+                            <tbody id="citas"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="desCitaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content border-danger">
+                <div class="modal-header bg-danger">
+                    <h4 class="modal-title text-white"><i class="icofont-file-excel"></i>&emsp;Descartar solicitud de cita médica</h4>
+                    <button type="button" class="btn btn-cerrar" data-bs-dismiss="modal" aria-label="Close"><i class="icofont-close"></i> </button>
+                </div>
+                <div class="modal-body">
+                    <form id="descartarForm">
+                        <input name="no_aten" id="no_aten_des" value="" style="display: none;">
+                        <input name="tipo" id="tipo_des" value="" style="display: none;">
+                        <div class="col-12">
+                            <label>Motivo por el cual realiza esta acción:</label>
+                            <textarea type="text" class="form-control form-control-sm border-danger" minlength="10" name="observacion_des" autocomplete="off" required></textarea>
+                        </div>
+                        <div class="col-12 mt-3 pt-3">
+                            <label class="form-check-label" for="flexSwitchCheckChecked">¿Enviar mensaje de notificación al usuario?</label>
+                            <div class="btn-group btn-group-sm">
+                                <input type="radio" class="btn-check" value="SI" name="envio_sms_des" id="success-outlined" autocomplete="off">
+                                <label class="btn btn-outline-success" for="success-outlined">SI</label>
+
+                                <input type="radio" class="btn-check" value="NO" name="envio_sms_des" id="danger-outlined" autocomplete="off" checked>
+                                <label class="btn btn-outline-danger" for="danger-outlined">NO</label>
+                            </div>
+                        </div>
+                        <div class="col-12 mt-3 pt-3 text-center">
+                            <button class="btn btn-block btn-outline-danger" id="descartar_save" type="submit">
+                                <i class="icofont-close"></i> <strong>Descartar</strong>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 col-12">
+            <div class="input-group input-group-sm mb-3">
+                <a class="btn btn-outline-success {% if titulo_proceso == 'Solicitudes' %}active{% endif %}" href="{% url 'solicitud_whatsapp' %}" onclick="$('#gifModal').modal('show');" type="button">
+                    <i class="icofont-users"></i> Flujo de trabajo
+                </a>
+
+                <a class="btn btn-outline-dark {% if titulo_proceso == 'Listado de espera' %}active{% endif %}" href="{% url 'solicitud_whatsapp' %}?l_espera=En espera" onclick="$('#gifModal').modal('show');" type="button">
+                    <i class="icofont-listing-number"></i> Lista de Espera
+                </a>
+
+                <a class="btn btn-outline-primary" href="#" onclick="window.location.reload(); $('#gifModal').modal('show');" type="button">
+                    <i class="icofont-refresh"></i> Actualizar
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 col-12 text-end">
+            <label style="font-size: 10pt;">Solicitudes en espera:</label>
+            <div id="t_data" style="font-size: 24pt; font-weight: 900;">{{ data | length }}</div>
+        </div>
+    </div>
+    <div class="col-sm-12">
+        <hr class="mt-0 mb-0">
+    </div>
+    <div class="col-12 mb-3 mt-lg-2 mt-5">
+        <div class="col-sm-12">
+            <div class="table table-responsive" style="height: 600px; overflow: scroll;">
+                <table style="font-size: 10pt !important;" id="datatable" class="enviar_aten table table-bordered border-primary table-hover">
+                    <thead class="" style="vertical-align: middle; font-size: 7pt !important;">
+                        <tr class="text-white bg-primary border-primary">
+                            <th class="border-primary" scope="col">Id</th>
+                            <th class="border-primary" scope="col">Fecha<br>solicitud</th>
+                            <th class="border-primary" scope="col">Tipo<br>Sol.</th>
+                            <th class="border-primary" scope="col">Doc. id</th>
+                            <th class="border-primary" scope="col">Nombre</th>
+                            <th class="border-primary" scope="col">Fecha<br>nacimiento</th>
+                            <th class="border-primary" scope="col">Telefono</th>
+                            <th class="border-primary" scope="col">Dirección</th>
+                            <th class="border-primary" scope="col">Sexo</th>
+                            <th class="border-primary" scope="col">Entidad</th>
+                            <th class="border-primary" scope="col">Email</th>
+                            <th class="border-primary" scope="col">Espec.</th>
+                            <th class="border-primary" scope="col">Servicio</th>
+                            <th class="border-primary" scope="col">Fecha<br>cita</th>
+                            <th class="border-primary" scope="col">No.<br>Aut</th>
+                            <th class="border-primary" scope="col">Imagen<br>Orden / Aut</th>
+                            <th class="border-primary" scope="col">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in data %}
+                            <tr style="text-align: center;" data-bs-toggle="tooltip" id="{{ d.id }}" {% if d.observacion_general != None %}title="{{ d.observacion_general }}"{% endif %}>
+                                <td class="p-1">{{ d.id }}</td>
+                                <td class="p-0">{{ d.fecha_s | date:"d/m/y h:i a" }}</td>
+                                <td class="p-0">{{ d.tramite.tramite | title }}</td>
+                                <td class="p-0">{{ d.pcte.tipo_id.tipo_id }}. {{ d.pcte.numero_id }}</td>
+                                <td class="p-0">{{ d.pcte.p_nombre | title }} {{ d.pcte.s_nombre | title }}<br>{{ d.pcte.p_apellido | title }} {{ d.pcte.s_apellido | title }}</td>
+                                <td class="p-0">{{ d.pcte.f_nacimiento | date:"d/m/y" }}</td>
+                                <td class="p-0">{{ d.pcte.telefono_movil }}<br>
+                                    <strong>Tel. alternativo:</strong><br>
+                                    <strong>(</strong>{{ d.pcte.telefono_fijo }}<strong>)</strong>
+                                </td>
+                                <td class="p-0">{{ d.pcte.direccion_residencia | title }}<br><b>{{ d.pcte.municipio_residencia.municipio | title }} ({{ d.pcte.municipio_residencia.departamento.departamento | title }})</b></td>
+                                <td class="p-0">{{ d.pcte.sexo.sexo }}</td>
+                                <td class="p-0">{{ d.eps.nombre | title }}<br>
+                                    <b>{{ d.regimen.regimen }}</b><br>
+                                    <b>{{ d.observacion_eps }}</b>
+                                </td>
+                                <td class="p-0">{{ d.pcte.email }}</td>
+                                <td class="p-0">{{ d.especialidad.nombre | title }}</td>
+                                <td class="p-0">{{ d.servicio.servicio | title }}</td>
+                                <td class="p-0">{{ d.fecha_cita | date:"d/m/Y" }}</td>
+                                <td class="p-0">{{ d.no_aut }}</td>
+                                <td class="p-0 m-0">
+                                    {% if d.orden_img or d.aut_img %}
+                                        <button type="button" class="btn btn-info btn-sm p-2 view_img" name="{{ d.aut_img }}" id="{{ d.orden_img }}" title="Visualizar Imagenes">
+                                            <i class="icofont-image"></i>
+                                        </button>
+                                        <p style="font-size: 7pt;" class="pb-1 pt-0 mt-0">visualizar<br>
+                                    {% endif %}
+                                </td>
+                                <td class="p-1 m-0 text-center" style="white-space: nowrap !important;">
+                                    <div class="input-group mb-1 atencion d-flex justify-content-center" style="flex-wrap: nowrap !important;" id="atencion-{{ d.id }}">
+                                        <button type="button" class="btn btn-primary btn-sm p-2 text-white" name="seleccionar" value="{{ d.id }}" id="seleccionar-{{ d.id }}" title="Tomar servicio">
+                                            <i class="icofont-user"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-success btn-sm p-2" name="atender" value="{{ d.id }}" id="atender-{{ d.id }}" disabled="disabled" title="Enviar notificación">
+                                            <i class="icofont-send-mail"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-secondary btn-sm p-2" name="espera" value="{{ d.id }}" id="espera-{{ d.id }}" disabled="disabled" title="Agregar a lista de espera">
+                                            <i class="icofont-info"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm p-2" name="descartar" value="{{ d.id }}" id="descartar-{{ d.id }}" disabled="disabled" title="Rechazar">
+                                            <i class="icofont-close"></i>
+                                        </button>
+                                    </div>
+                                    <p style="font-size: 7pt;" class="pb-1 pt-0 mt-0">Atendido por:<br>
+                                    <b style="font-size: 8pt; text-transform: lowercase;" id="usr_aten_{{ d.id }}">{% if d.usuario_atencion != None %}{{ d.usuario_atencion.username }}{% endif %}</b></p>
+                                </td>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot class="text-center" style="vertical-align: middle; text-transform: uppercase;">
+                        <tr style="font-size: 7pt;" class="text-white bg-primary border-primary">
+                            <th class="border-primary" scope="col">Id</th>
+                            <th class="border-primary" scope="col">Fecha <br>solicitud</th>
+                            <th class="border-primary" scope="col">Tipo <br>Sol.</th>
+                            <th class="border-primary" scope="col">Doc. id</th>
+                            <th class="border-primary" scope="col">Nombre</th>
+                            <th class="border-primary" scope="col">Fecha <br>nacimiento</th>
+                            <th class="border-primary" scope="col">Telefono</th>
+                            <th class="border-primary" scope="col">Dirección</th>
+                            <th class="border-primary" scope="col">Sexo</th>
+                            <th class="border-primary" scope="col">Entidad</th>
+                            <th class="border-primary" scope="col">Email</th>
+                            <th class="border-primary" scope="col">Espec.</th>
+                            <th class="border-primary" scope="col">Servicio</th>
+                            <th class="border-primary" scope="col">Fecha <br>cita</th>
+                            <th class="border-primary" scope="col">No. <br>Aut</th>
+                            <th class="border-primary" scope="col">Imagen <br>Orden / Aut</th>
+                            <th class="border-primary" scope="col">Acción</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts%}
+    <script>
+        $(document).ready(function (e){
+            $('#menu_citas').addClass('active');
+            notificacion({{ ind }},"{{ aviso }}");
+            const session_websocket = new WebSocket(`ws://${window.location.host}/ws/citasModulo/`)
+
+            session_websocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                if (data.data.ind == 1) {
+                    $("#gifModal").modal("hide");
+                    notificacion(data.data.ind, data.data.aviso);
+                } else if (data.data.ind == 2) {
+                    $('#gifModal').modal('hide');
+                    if (data.data.tipo == "seleccionar") {
+                        $('#usr_aten_' + data.data.solicitud_id).text(data.data.user);
+                        if("{{ request.user.id }}" == data.data.user_id){
+                            $("#atencion-"+data.data.solicitud_id+" button").removeAttr('disabled');
+                            $("#"+data.data.tipo+"-"+data.data.solicitud_id).attr('disabled','disabled');
+                        }else{
+                            $("#atencion-"+data.data.solicitud_id+" button").attr('disabled', 'disabled');
+                        }
+                    } else if (data.data.tipo == "atender"){
+                        $("#citas").empty();
+                        $("#paciente").empty();
+                        $("#solCitaModal").modal("show");
+                        $("#paciente").text(data.data.lista[0].nombre);
+                        for (var i = 0; i < (data.data.lista).length; i++) {
+                            $("#citas").append(' \
+                                <tr> \
+                                    <td class="text-center">'+data.data.lista[i].fecha+'</td> \
+                                    <td colspan="">'+data.data.lista[i].convenio+'</td> \
+                                    <td class="text-center">'+data.data.lista[i].especialidad+'</td> \
+                                    <td class="text-center">'+data.data.lista[i].telefono+'</td> \
+                                    <td class="p-0 m-0 text-center '+data.data.lista[i].ids+'"> \
+                                        <div class="form-group mt-1"> \
+                                            <button type="button" class="btn btn-success btn-sm p-1 send_msg" name="send_msg" value="'+data.data.lista[i].ids+'" id="'+data.data.lista[i].no_aten+'"> \
+                                                <i class="icofont-check"></i> \
+                                            </button> \
+                                        </div> \
+                                    </td> \
+                                </tr>');
+                        }
+                    } else if (data.data.tipo == "notificacion"){
+                        window.location.reload();
+                    }
+                }else if(data.data.ind == 0){
+                    $('#gifModal').modal('hide');
+                    if("{{ request.user.id }}" == data.data.user_id) {
+                        notificacion(data.data.ind, data.data.aviso);
+                    }
+                }
+            }
+
+            session_websocket.onclose = function(e) {
+                window.location.reload();
+                $("#gifModal").modal('show');
+            };
+
+            function buscar(id) {
+                var input, filter, table, tr, td, i, txtValue;
+                input = document.getElementById("search");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("datatable");
+                tr = table.getElementsByTagName("tr");
+
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[id];
+                    if (td) {
+                        txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        }
+                        else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+
+            setTimeout(function(){
+                $("#datatable_wrapper").prepend("<div id='contentExt' class='row'></div>");
+                $(".dt-buttons").prependTo("#contentExt");
+                $("#datatable_filter").appendTo("#contentExt");
+                $("#datatable_filter input").addClass("border-primary");
+                $(".dt-buttons").addClass("col-6");
+                $("#datatable_filter").addClass("col-6");
+                $(".buttons-excel").text('Exportar a Excel');
+                $(".buttons-excel").parent().attr('style', 'padding-left:0px !important');
+                $(".buttons-excel").addClass('btn btn-sm btn-primary pt-1 pb-1 pl-3 pr-3');
+                $(".buttons-excel").prepend("<i class='icofont-file-excel'></i>&emsp;");
+                let titulo_proceso = $("#titulo_proceso").text().replace(/[^A-Za-z]/g, '')
+                if(titulo_proceso == "Listadodeespera"){
+                    $(".en_espera").attr('disabled', false);
+                    $(".en_espera").removeClass("espera");
+                    $(".en_espera").removeClass("btn-info");
+                    $(".en_espera").addClass("btn-secondary");
+                }
+            },50);
+
+            $('#datatable').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excel',
+                        messageTop: 'The information in this table is copyright to Sirius Cybernetics Corp.'
+                    },
+                ],
+            });
+
+            $(".search_btn").click(function (e){
+                buscar($(this).val());
+            });
+
+            $("#datatable").on('click', ".view_img", function (e){
+                $("#aut_imgModal").attr('src', "/media/"+$(this).attr('name'));
+                $("#orden_imgModal").attr('src', "/media/"+$(this).attr('id'));
+                $("#view_imgModal").modal('show');
+            });
+
+            $("#datatable").on('click', '.atencion button', function (data) {
+                $(this).attr('disabled','disabled');
+                $('#gifModal').modal('show');
+                let tipo = $(this).attr('name');
+                if(tipo == "descartar"){
+                    $("#no_aten_des").val($(this).val());
+                    $("#tipo_des").val(tipo);
+                    $('#gifModal').modal('hide');
+                    $('#desCitaModal').modal('show');
+                }else {
+                    session_websocket.send(JSON.stringify({
+                        'tipo': tipo,
+                        'no_aten': $(this).val(),
+                    }))
+                    return false;
+                }
+            });
+
+            function convertFormToJSON(form) {
+                const array = $(form).serializeArray();
+                const json = {};
+                $.each(array, function () {
+                    json[this.name] = this.value || "";
+                });
+                return json;
+            }
+
+            $("#descartarForm").submit(function (e){
+                e.preventDefault();
+                const form = $(e.target);
+                const json = convertFormToJSON(form);
+                $('#gifModal').modal('show');
+                session_websocket.send(JSON.stringify(json))
+                return false;
+            });
+
+            $("#citas").on("click", ".send_msg", function(e){
+                session_websocket.send(JSON.stringify({
+                    'tipo': $(this).attr('name'),
+                    'no_aten': $(this).attr('id'),
+                    'id_cita': $(this).val(),
+                }))
+                $("#solCitaModal").modal("hide");
+                $("#gifModal").modal("show");
+            });
+        });
+    </script>
+ {% endblock %}

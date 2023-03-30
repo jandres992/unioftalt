@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+    {% load static %}
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+
+        <title>Ticket Turno - {{ empresa.nombre }}</title>
+
+        <link rel="shortcut icon" href="{% static 'img/logo.jpg' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/css/core/libs.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/css/hope-ui.css' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/css/custom.min.css' %}" />
+        <link rel="stylesheet" href="{% static 'icon/icofont/css/icofont.css' %}" />
+
+        <style>
+            body{
+                zoom: 70%;
+            }
+            @media print {
+                @page {
+                    size: 7.8cm 5cm;
+                    size: portrait;
+                    margin: 2px;
+                }
+                 #no_print {
+                    display: none !important;
+                }
+            }
+            #no_print {
+                position: absolute;
+                width: 7.8cm;
+                bottom: 1cm;
+            }
+            .logo, .numero_turno, .label_turno, .label_rango, .label_fecha, .label_pcte, .rango, .fecha, .pcte, .empresa, .tipo_turno, .servicio{
+                width: 7.8cm;
+                position: absolute;
+                left: 0cm;
+                font-size: 15pt;
+            }
+            .logo{
+                top:0cm;
+            }
+            .label_turno{
+                top: 1.3cm;
+                padding-left: 0px;
+                font-weight: 900;
+                color: #3a3c3f;
+                text-align: left !important;
+            }
+            .label_rango{
+                top: 3.3cm;
+                padding-left: 5px;
+                color: #3a3c3f;
+                text-align: left !important;
+            }
+            .label_fecha{
+                top: 3.73cm;
+                padding-left: 5px;
+                color: #3a3c3f;
+                text-align: left !important;
+            }
+            .label_pcte{
+                top: 4.18cm;
+                padding-left: 5px;
+                color: #3a3c3f;
+                text-align: left !important;
+            }
+
+
+            .rango{
+                top: 3.3cm;
+                left: 2.7cm !important;
+                font-weight: 900;
+                color: #3a3c3f;
+                text-align: left !important;
+            }
+            .fecha{
+                top: 3.73cm;
+                left: 2.7cm !important;
+                font-weight: 900;
+                color: #3a3c3f;
+                text-align: left !important;
+            }
+            .pcte{
+                top: 4.18cm;
+                left: 2.7cm !important;
+                font-weight: 900;
+                color: #3a3c3f;
+                text-align: left !important;
+            }
+
+            .numero_turno{
+                padding-left: 0px !important;
+                top: 1.38cm;
+                font-size: 44pt !important;
+                font-weight: 900;
+                color: black;
+                text-align: left !important;
+            }
+            .tipo_turno{
+                top: 4.85cm;
+                padding-left: 5px !important;
+                font-weight: 900;
+                color: #3a3c3f;
+                text-align: left !important;
+            }
+            .servicio{
+                width: 10cm;
+                top: 5.3cm;
+                font-weight: 900;
+                color: black;
+                text-align: center !important;
+            }
+            .empresa{
+                width: 10cm;
+                top: 5.9cm;
+                padding-left: 3px;
+                font-size: 10pt !important;
+                font-weight: 900;
+                color: black;
+                text-align: center !important;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="row" id="no_print" style="display: none">
+            <div class="btn-group btn-group-block" role="group">
+                <button type="button" class="btn btn-danger text-white" id="volver_btn"><i class="icofont-reply-all"></i>&emsp;regresar&emsp;</button>
+                <button type="button" class="btn btn-warning" onclick="window.print();"><i class="icofont-printer"></i>&emsp;reimprimir&emsp;</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="logo text-center">
+                <img src="/static/img/logo_ext.png" width="240" height="60">
+            </div>
+            <div class="label_turno">TURNO:</div>
+            <div class="numero_turno">{{ ticket_turno }}</div>
+            <div class="label_rango">RANGO:</div>
+            <div class="rango">{{ ticket_rango }}</div>
+            <div class="label_fecha">FECHA:</div>
+            <div class="fecha">{{ ticket_fecha }}</div>
+            {% if ticket_persona != "CC - 0" %}
+                <div class="label_pcte">PACIENTE:</div>
+                <div class="pcte">{{ ticket_persona }}</div>
+            {% endif %}
+            <div class="empresa">{{ empresa.razon_social }}</div>
+            <div class="tipo_turno"> {{ ticket_tp_turno }}:</div>
+            <div class="servicio">{{ ticket_servicio }}</div>
+        </div>
+    </body>
+
+    <script src="{% static 'assets/js/core/libs.min.js' %}"></script>
+    <script src="{% static 'assets/js/core/external.min.js' %}"></script>
+    <script src="{% static 'assets/js/hope-ui.js' %}"></script>
+    <script>
+        $(window).ready(function(){
+
+            function sleep (time) {
+                return new Promise((resolve) => setTimeout(resolve, time));
+            }
+            sleep(100).then(() => {
+                window.print();
+            });
+
+            $("#volver_btn").click(function (e){
+                window.open("{% url 'dig_turno' %}", "_self");
+            });
+
+            window.onafterprint = (event) => {
+                if (! (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i))) {
+                    window.open("{% url 'dig_turno' %}","_self");
+                }
+            }
+        });
+    </script>
+</html>

@@ -1,0 +1,417 @@
+{% extends 'dashboard.html' %}
+
+{% load static %}
+{% load l10n %}
+
+{% block titulo %}
+    Solicitud Citas
+{% endblock %}
+
+{% block pagina %}
+    Registro de solicitud - Citas Médicas
+{% endblock %}
+
+{% block style %}
+    <style type="text/css">
+        td {
+            white-space: normal !important;
+        }
+        #datatable td {
+            white-space: normal !important;
+            margin: 8px;
+            padding: 2px;
+        }
+        #datatable th {
+            padding: 2px;
+        }
+        @media screen and (max-width: 500px) {
+            .toast-container {
+                width: 100% !important;
+                align-items: end !important;
+
+            }
+        }
+        @media screen and (min-width: 501px) {
+            #tp_id{
+                border-top-right-radius: 0px;
+                border-bottom-right-radius: 0px;
+            }
+            #tp_id_content{
+                padding-right: 0px;
+            }
+
+            #no_id_content{
+                padding-left: 0px;
+                padding-right: 0px;
+            }
+            #no_id{
+               border-radius: 0 0 0 0;
+            }
+
+            #consultar_pcte_content{
+                padding-left: 0px;
+            }
+            #consultar_pcte{
+                border-top-left-radius: 0px;
+                border-bottom-left-radius: 0px;
+            }
+            #lienzo{
+                border: solid #0a53be 2px;
+                border-radius: 5px 5px 5px 5px;
+            }
+            #logo img{
+                width: 50%;
+            }
+            #titulo{
+                font-size: 18pt;
+            }
+            #sub_titulo{
+                font-size: 18pt;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% include 'modal_cargando.html' %}
+    <div class="row d-flex justify-content-center" style="padding-bottom: 1cm;">
+        <div class="col-xxl-10 col-12 mb-5" id="lienzo">
+            <form method="post" id="citaForm" action="{% url 'form_atencion_cita' %}" enctype="multipart/form-data">{% csrf_token %}
+                <label style="font-weight: 900;font-size:14pt;color: black;">Datos del paciente:<span class="text-success">*</span></label>
+                <div class="row">
+                    <div class="col-sm-4 col-12 mt-1" id="tp_id_content">
+                        <select class="form-select border-primary" name="tp_id" id="tp_id" autocomplete="off" required>
+                            <option value="">Tipo de Identificación</option>
+                            {% for t in tp_id %}
+                                <option value="{{ t.id }}">{{ t.tipo_id }} - {{ t.detalle }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-sm-4 col-12 mt-1" id="no_id_content">
+                        <input type="text" class="form-control border-primary" placeholder="Número de Identificación" name="no_id" id="no_id" autocomplete="off" required>
+                    </div>
+                    <div class="col-sm-4 col-12 mt-1" id="consultar_pcte_content">
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-primary" id="consultar_pcte">
+                                <i class="icofont-search"></i> Buscar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <hr class="bg-primary border-primary" style="height: 3px;">
+                <div class="row" id="dataForm" style="display: none;">
+                    <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                        <label>Primer Nombre:<span class="text-success">*</span></label>
+                        <input type="text" name="p_nombre" class="form-control border-primary" required>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                        <label>Segundo Nombre:</label>
+                        <input type="text" name="s_nombre" class="form-control border-primary">
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                        <label>Primer Apellido:<span class="text-success">*</span></label>
+                        <input type="text" name="p_apellido" class="form-control border-primary" required>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                        <label>Segundo Apellido:</label>
+                        <input type="text" name="s_apellido" class="form-control border-primary">
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12 mb-3">
+                        <label>Fecha de nacimiento:<span class="text-success">*</span></label>
+                        <input type="date" class="form-control border-primary" name="f_nacimiento" data-date="" data-date-format="YYYY-MM-DD" placeholder="YYYY-MM-DD" autocomplete="off" required>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12 mb-3">
+                        <label>Teléfono movil:<span class="text-success">*</span></label>
+                        <input type="text" name="tel_pcte" minlength="10" maxlength="10" class="form-control border-primary" required>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12 mb-3">
+                        <label>Otro número de contacto:</label>
+                        <input type="text" name="other_tel_pcte" minlength="7" class="form-control border-primary">
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                        <label>Departamento de <strong>residencia</strong>:<span class="text-success">*</span></label>
+                        <select class="form-select border-primary" id="departamento" required>
+                            <option value="">Seleccione</option>
+                            {% for d in departamento %}
+                                <option value="{{ d.id }}">{{ d.departamento }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                        <label>Municipio de <strong>residencia</strong>:<span class="text-success">*</span></label>
+                        <select class="form-select border-primary" name="municipio" id="municipio" autocomplete="off" required>
+                            <option value="">Seleccione</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-6 col-sm-12 col-12 mb-3">
+                        <label>Dirección de residencia:<span class="text-success">*</span></label>
+                        <input type="text" name="dir_pcte" class="form-control border-primary" required>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <label>Correo Electronico:<span class="text-success">*</span></label>
+                        <input type="text" name="email_pcte" class="form-control border-primary" required>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                        <label>Sexo:<span class="text-success">*</span></label>
+                        <select class="form-select border-primary" name="sexo" id="sexo" autocomplete="off" required>
+                            <option>Seleccione</option>
+                            {% for s in sexo %}
+                                <option value="{{ s.id }}">{{ s.descripcion | upper }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                        <label>Grupo Sanguineo:<span class="text-success">*</span></label>
+                        <select class="form-select border-primary" name="grupo_pcte" required>
+                            <option value="">Seleccione</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="AB">AB</option>
+                            <option value="O">O</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                        <label>Rh:<span class="text-success">*</span></label>
+                        <select class="form-select border-primary" name="rh_pcte" required>
+                            <option value="">Seleccione</option>
+                            <option value="+">+</option>
+                            <option value="-">-</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <hr class="bg-primary" style="height: 3px;">
+                        <label style="font-weight: 900;font-size:14pt;color: black;">Datos para solicitud de cita médica:</label>
+                        <hr class="bg-primary" style="height: 3px;">
+                    </div>
+                    <div class="col-sm-6 col-12 mb-3">
+                        <label>Tipo de tramite:<span class="text-success">*</span></label>
+                        <select class="form-select border-primary" name="tramite" id="tramite" required>
+                            <option value="">Seleccione</option>
+                            {% for t in tramite %}
+                                <option value="{{ t.id }}">{{ t.tramite | upper}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-12 mb-3 agendar" style="display: none;">
+                        <label>Entidad de salud:<span class="text-success">*</span></label>
+                        <select class="form-select border-primary" name="entidad">
+                            <option value="">Seleccione</option>
+                            {% for e in eps %}
+                                <option value="{{ e.id }}">{{ e.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 mb-3 agendar" style="display: none;">
+                        <label>Si selecciono <b>OTRAS</b>, por favor escriba el nombre de la entidad:</label>
+                        <input type="text" name="entidad_text" id="entidad_text" class="form-control border-primary">
+                    </div>
+
+                    <div class="col-sm-6 col-12 mb-3 agendar" style="display: none;">
+                        <label>Regimen:<span class="text-success">*</span></label>
+                        <select class="form-select border-primary" name="regimen">
+                            <option value="">Seleccione</option>
+                            {% for r in regimen %}
+                                <option value="{{ r.id }}">{{ r.regimen }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-sm-6 col-12 mb-3">
+                        <label>Especialidad:<span class="text-success">*</span></label>
+                        <select class="form-select border-primary" name="especialidad" required>
+                            <option value="">Seleccione</option>
+                            {% for s in especialidad %}
+                                <option value="{{ s.id }}">{{ s.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-sm-6 col-12 mb-3 agendar" style="display: none;">
+                        <label>Servicio:<span class="text-success">*</span></label>
+                        <select class="form-select border-primary" name="servicio">
+                            <option value="">Seleccione</option>
+                            {% for sr in servicio %}
+                                <option value="{{ sr.id }}">{{ sr.servicio }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-sm-6 col-12 mb-3 agendar" style="display: none;">
+                        <label>Número de autorización:</label>
+                        <input type="text" name="no_aut" id="no_aut" maxlength="30" class="form-control border-primary" title="Solo número de autorización"  data-bs-toggle="tooltip" data-bs-placement="right">
+                    </div>
+
+                    <div class="col-12 mb-3 agendar" style="display: none;">
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <label id="label_doc_pcte">Imagen de orden médica:</label>
+                                <input type="file" name="orden" id="orden" accept="image/*" capture="camera" class="camera form-control border-primary">
+                            </div>
+                            <div class="col-sm-6 col-12 mt-1 text-center align-items-center align-content-center">
+                                <img id="orden_img" class="img-fluid" style="width:40%;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-3 agendar" style="display: none;">
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <label id="label_doc_pcte">Imagen de Autorización de su EPS:</label>
+                                <input type="file" name="aut" id="aut" accept="image/*" capture="camera" class="camera form-control border-primary">
+                            </div>
+                            <div class="col-sm-6 col-12 mt-1 text-center align-items-center align-content-center">
+                                <img class="img-fluid" id="aut_img" style="width:40%;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6 col-12 mb-3 cancelar" style="display: none;">
+                        <label>Fecha de cita médica:<span class="text-success">*</span></label>
+                        <input class="form-control border-primary" name="f_cita" id="f_cita" type="date" data-date="" data-date-format="YYYY-MM-DD">
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label>Observaciones:</label>
+                        <textarea type="text" name="observacion_g" id="observacion_g" class="form-control border-primary"></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <hr class="bg-primary" style="height: 3px;">
+                    </div>
+
+                    <div class="col-12 text-center mb-2" id="guardarCitaForm" style="display: none;">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary" id="guardarCitaBtn">
+                                <i class="icofont-send-mail"></i> Enviar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts%}
+    <script>
+        $(document).ready(function (e){
+            $('#menu_citas').addClass('active');
+
+            $(".camera").change(function (e){
+                let camera = $(this);
+                let img = document.querySelector("#"+camera.attr('name')+"_img");
+                img.src = URL.createObjectURL(e.target.files[0]);
+            });
+
+            if ("{{ ind }}" == "2"){
+                $("#lienzo").empty();
+                $("#lienzo").append('<div class="col-12 text-center"><p style="font-size: 32pt;font-weight: 900;">{{ aviso }}</p><p><a href="#" onclick="window.location.reload();"> Regresar </div>');
+            }else {
+                notificacion({{ ind }}, "{{ aviso }}");
+            }
+            setTimeout(function(){
+                let width = screen.width
+                if (screen.width <= 400) {
+                    $(".lateral").click();
+                }
+            },300);
+
+
+            $("#tramite").change(function (e){
+                if ($(this).val() != "") {
+                    let opc = $("#tramite option:selected").text();
+                    if (opc == "AGENDAR CITA") {
+                        $(".agendar").show();
+                        $(".agendar input").attr('required', 'required');
+                        $(".agendar select").attr('required', 'required');
+                        $(".cancelar").hide();
+                        $(".cancelar input").removeAttr('required');
+                        $("#entidad_text").removeAttr('required');
+                        $("#no_aut").removeAttr('required');
+                    } else {
+                        $(".agendar").hide();
+                        $(".agendar input").removeAttr('required');
+                        $(".agendar select").removeAttr('required');
+                        $(".cancelar").show();
+                        $(".cancelar input").attr('required', 'required');
+                    }
+                    $("#orden").removeAttr('required');
+                    $("#aut").removeAttr('required');
+                    $("#guardarCitaForm").show();
+                }
+            });
+
+            $("#consultar_pcte").click(function (e) {
+                if($("#no_id").val() !="" && $("#tp_id").val() != ""){
+                    $(this).attr("disabled", "disabled");
+                    var no_id = $("#no_id").val();
+                    var tp_id = $("#tp_id").val();
+                    $.ajax({
+                        url:   '{% url "form_data_pcte" %}',
+                        type:  'post',
+                        data: {
+                            tp_id: tp_id,
+                            no_id: no_id,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },beforeSend: function (e){
+                            $("#gifModal").modal("show");
+                        },
+                        success:  function (data) {
+                            if(data.ind == '2'){
+                                $("#dataForm").show();
+                                $("input[name=p_nombre]").val(data.data.p_nombre);
+                                $("input[name=s_nombre]").val(data.data.s_nombre);
+                                $("input[name=p_apellido]").val(data.data.p_apellido);
+                                $("input[name=s_apellido]").val(data.data.s_apellido);
+                                $("input[name=dir_pcte]").val(data.data.direccion);
+                                $("input[name=tel_pcte]").val(data.data.telefono);
+                                $("input[name=email_pcte]").val(data.data.email);
+                                $("input[name=f_nacimiento]").val(data.data.f_nacimiento);
+                                if (data.data.departamento != "") {
+                                    $("#departamento > option[value=" + data.data.departamento + "]").attr("selected", true);
+                                    busq_municipio();
+                                    setTimeout(() => {
+                                        $("#municipio > option[value=" + data.data.municipio + "]").attr("selected", true);
+                                    }, 1000);
+                                }
+                                $("#sexo > option[value="+data.data.sexo+"]").attr("selected",true);
+                                $("select[name=grupo_pcte] > option[value='"+data.data.grupo_pcte+"']").attr("selected", true);
+                                $("select[name=rh_pcte] > option[value='"+data.data.rh_pcte+"']").attr("selected", true);
+                                notificacion(data.ind , data.aviso);
+
+                            } else if(data.ind == '1'){
+                                $("#dataForm").show();
+                                let tipo_id = $("#tp_id").val();
+                                let no_id = $("#no_id").val();
+                                $("#citaForm")[0].reset();
+                                $("#tp_id > option[value="+tipo_id+"]").attr("selected",true);
+                                $("#no_id").val(no_id);
+                                notificacion(data.ind , data.aviso);
+                            }
+                            $("#gifModal").modal("hide");
+                        }
+                    });
+                    return false;
+                }else{
+                    notificacion(0, "Falta diligenciar datos");
+                    $("#tp_id").focus();
+                }
+            });
+            $("body").keypress(function(e) {
+                let code = (e.keyCode ? e.keyCode : e.which);
+                if(code == 13) {
+                    if ($("#guardarCitaForm").is(':visible')) {
+                        $("#guardarCitaBtn").click();
+                    } else {
+                        if (! $("#consultar_pcte").is(':disabled')) {
+                            $("#consultar_pcte").click();
+                        }
+                        return false;
+                    }
+                }
+            });
+            {% include 'general/busq_mpio.js' %}
+        });
+    </script>
+ {% endblock %}

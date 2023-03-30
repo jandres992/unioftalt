@@ -1,0 +1,72 @@
+<!-- Modal -->
+    <div class="modal fade" id="pcteModal" style="z-index: 8000;" aria-labelledby="personaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <form id="PacienteForm" method="post" action="{% url 'save_persona' %}">{% csrf_token %}
+                    <div class="modal-header bg-secondary ">
+                        <h5 class="modal-title text-white"><i class="icofont-user"></i>&emsp;Datos Paciente</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-6 col-12 mb-3">
+                                <label>Tipo de Id:</label>
+                                <select class="form-select form-select-sm border-secondary" name="tipo_id_pcte" id="tp_id_pcte" autocomplete="off" required>
+                                    <option value="">Seleccione</option>
+                                    {% for t in tipo_id %}
+                                        <option value="{{ t.id }}">{{ t.tipo_id }} - {{ t.detalle }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-6 col-12 mb-3">
+                                <label>Número de Id:</label>
+                                <input type="text" name="numero_id_pcte" value="" id="no_id_pcte" class="form-control form-control-sm border-secondary" autocomplete="off" required>
+                            </div>
+                            <div class="col-sm-6 col-12 mb-3">
+                                <label>Primer Nombre:</label>
+                                <input type="text" name="p_nombre" class="form-control form-control-sm border-secondary" autocomplete="off" required>
+                            </div>
+                            <div class="col-sm-6 col-12 mb-3">
+                                <label>Segundo Nombre:</label>
+                                <input type="text" name="s_nombre" class="form-control form-control-sm border-secondary" autocomplete="off">
+                            </div>
+                            <div class="col-sm-6 col-12 mb-3">
+                                <label>Primer Apellido:</label>
+                                <input type="text" name="p_apellido" class="form-control form-control-sm border-secondary" autocomplete="off" required>
+                            </div>
+                            <div class="col-sm-6 col-12 mb-3">
+                                <label>Segundo Apellido:</label>
+                                <input type="text" name="s_apellido" class="form-control form-control-sm border-secondary" autocomplete="off">
+                            </div>
+                            <div class="col-sm-6 col-12 mb-3">
+                                <label>Teléfono movil:</label>
+                                <input type="text" name="tel_pcte" minlength="10" maxlength="10" class="form-control form-control-sm border-secondary" autocomplete="off" required>
+                            </div>
+                            <div class="col-sm-6 col-12 mb-3">
+                                <label>Sexo:</label>
+                                <select class="form-select form-select-sm border-secondary" name="sexo" id="sexo" autocomplete="off" required>
+                                    <option>Seleccione</option>
+                                    {% for s in sexo %}
+                                        <option value="{{ s.id }}">{{ s.descripcion }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <label>Correo Electronico:</label>
+                                <input type="text" name="email_pcte" class="form-control form-control-sm border-secondary" autocomplete="off">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer text-center justify-content-center align-content-center align-items-center">
+                        <button type="submit" class="btn btn-sm btn-success">
+                            <i class="icofont-check"></i>&emsp;guardar
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal" >
+                            <i class="icofont-close"></i>&emsp;cerrar &emsp;
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Fin Modal -->

@@ -1,0 +1,32 @@
+#gifModal {
+    z-index: 99999;
+    background-color: rgba(0,0,0,0.82) !important;
+}
+
+#gifModal .modal-content{
+    border:0px;
+}
+
+@media (min-width: 601px) {
+    .cargando {
+        position: absolute !important;
+        border:1cm solid;
+        top: 250px !important;
+        border-right-color:transparent;
+        left: 25%;
+        width: 9cm;
+        height: 9cm;
+    }
+}
+
+@media (max-width: 600px) {
+     .cargando {
+        position: absolute !important;
+        border:1cm solid;
+        top: 250px !important;
+        border-right-color:transparent;
+        left: 25%;
+        width: 5cm;
+        height: 5cm;
+    }
+}

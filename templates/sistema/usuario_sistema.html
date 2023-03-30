@@ -1,0 +1,89 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block titulo %}
+    Usuario sistema
+{% endblock %}
+
+{% block pagina %}
+    Administración de usuarios
+{% endblock %}
+
+{% block style %}
+    <style>
+        .table {
+            font-size: 8pt !important;
+            color: black;
+        }
+        .flotante{
+            position: absolute;
+            z-index: 3001;
+            top:2.6cm;
+            right: 0cm;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row d-flex justify-content-center">
+        <div class="col-lg-6 col-md-8 col-12">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white pb-2">
+                    <i class="icofont-user-suited"></i> Crear usuario para {{ request.session.empresa.n_app }}
+                </div>
+                <div class="card-body table-blue">
+                    <form class="form-horizontal" method="post" action="{% url 'system_user' %}" >{% csrf_token %}
+                        <div class="row">
+                            <div class="col-12 mb-2">
+                                <label>Nombre:</label>
+                                <input name="nombre" class="form-control border-primary" type="text" required />
+                            </div>
+                            <div class="col-12 mb-2">
+                                <label>Apellido:</label>
+                                <input name="apellido" class="form-control border-primary" type="text" required />
+                            </div>
+                            <div class="col-6 mb-2">
+                                <label class="control-label">Contraseña:</label>
+                                <input name="password" class="form-control border-primary" type="password" required />
+                            </div>
+                            <div class="col-6 mb-2">
+                                <label class="control-label">Confirmar contraseña:</label>
+                                <input name="rpassword" class="form-control border-primary" type="password" required />
+                            </div>
+                            <div class="col-12">
+                                <hr class="p-1 border-primary">
+                            </div>
+
+                            {% for g in grupos %}
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input name="grupos" class="form-check-input" type="checkbox" value="{{ g.id }}">
+                                        <label class="form-check-label" style="font-size: 10pt;">{{ g.name | title }}</label>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                            <div class="col-12">
+                                <hr class="p-1 border-primary">
+                            </div>
+                            <div class="col-12 text-center">
+                                <button id="usuario" class="btn btn-success" type="submit">
+                                    <i class="icofont-check"></i> Guardar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts%}
+    <script>
+        $(document).ready(function (e){
+            $('#menu_sistema').addClass('active');
+            notificacion({{ ind }},"{{ aviso }}");
+        });
+    </script>
+{% endblock %}

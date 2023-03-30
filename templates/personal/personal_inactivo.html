@@ -1,0 +1,115 @@
+
+{% extends 'plantilla.html' %}
+
+{% block menu_personal %}
+    active
+{% endblock %}
+
+{% block title %}
+    Administración de Personal - <small>inactivo</small>
+{% endblock %}
+
+{% block breadcum %}
+    <li class="breadcrumb-item">
+        <i class="fa fa-folder-open"></i> Personal
+    </li>
+    <li class="breadcrumb-item active">
+        <i class="fa fa-file"></i> Listado de personal inactivo
+    </li>
+{% endblock %}
+
+{% block content %}
+    {% include 'nuevo_personal.html' %}
+    {% include 'modificacion_personal.html' %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-dark-red">
+                <div class="card-header bg-dark-red text-white">
+                    <i class="fa fa-bars fa-fw"></i> Listado de Empleados Antiguos
+                </div>
+                <div class="table-responsive background-table-color">
+                    <div class="row">
+                        <div class="col-4" style="margin: 10px">
+                            <input class="form-control form-control-sm search-label-icon" id="search_empleados" onkeyup="buscar_empleados();" placeholder="Buscar">
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-hover" id="tabla_empleados">
+                        <thead style="font-size: 8pt;">
+                            <tr class="alert-dark-red">
+                                <th>Nombre</th>
+                                <th colspan="2">Doc de Id.</th>
+                                <th>lugar Exp.</th>
+                                <th style="font-size: 8pt">Fecha de Ingreso</th>
+                                <th>Area</th>
+                                <th>Cargo</th>
+                                <th>Foto</th>
+                                <th style="font-size: 8pt">Editar</th>
+                                <th style="font-size: 8pt">Reg. ultimo mes</th>
+                            </tr>
+                        </thead>
+                        <tfoot style="font-size: 8pt;">
+                            <tr class="alert-dark-red">
+                                <th>Nombre</th>
+                                <th colspan="2">Doc de Id.</th>
+                                <th>lugar Exp.</th>
+                                <th style="font-size: 8pt">Fecha de Ingreso</th>
+                                <th>Area</th>
+                                <th>Cargo</th>
+                                <th>Foto</th>
+                                <th style="font-size: 8pt">Editar</th>
+                                <th style="font-size: 8pt">Reg. ultimo mes</th>
+                            </tr>
+                        </tfoot>
+                        <tbody class="table-red">
+                        {% for personal in personal %}
+                            <tr>
+                                <td>{{ personal.nombre }} {{ personal.apellido }}</td>
+                                <td style="font-size: 9pt">{{ personal.tipoid.tipoid }}</td>
+                                <td style="font-size: 9pt">{{ personal.identificacion }}</td>
+                                <td style="font-size: 9pt">{{ personal.lugar }}</td>
+                                <td style="font-size: 9pt">{{ personal.fechaingreso | date:'d-m-Y' }}</td>
+                                <td style="font-size: 9pt">{{ personal.area.area }}</td>
+                                <td style="font-size: 9pt">{{ personal.cargo.cargo }}</td>
+                                <td><img style="width: 40px" src="/media/{{ personal.imagen }}"></td>
+                                <td><button type="button" data-toggle="modal" data-target="#editar_empleadoModal"class="btn btn-primary btn-xs" name="editar_empleado" value="{{ personal.identificacion }}"><i class="fa fa-bookmark"></i></button></td>
+                                <td>
+                                    <form action="{% url 'registros_personal_inactivo' %}" method="get">
+                                        <button type="submit" class="btn btn-info btn-xs" name="identificacion" value="{{ personal.identificacion }}"><i class="fa fa-search"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div style="margin-top: 80px"></div>
+        </div>
+	</div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function buscar_empleados() {
+            var input, filter, table, tr, td, i, txtValue;
+
+            input = document.getElementById("search_empleados");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("tabla_empleados");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    }
+                    else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+{% endblock %}

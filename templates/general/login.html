@@ -1,0 +1,21 @@
+{% extends 'login/template.html' %}
+
+{% block titulo %}
+    {{ request.session.empresa.n_app | title }}
+{% endblock %}
+
+{% block url_login %}
+    {% url 'general_login' %}
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}
+
+{% block scripts%}
+    <script>
+        $(document).ready(function (e){
+            notificacion({{ ind }}, "{{ aviso }}");
+        });
+    </script>
+{% endblock %}

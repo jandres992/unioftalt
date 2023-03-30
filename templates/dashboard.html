@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+    {% load static %}
+    {% load l10n %}
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+        <title>{% block titulo %}{% endblock %} - Health clinic</title>
+
+        <link rel="shortcut icon" href="{% static 'img/logo.png' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/core/libs.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/vendor/aos/dist/aos.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/hope-ui.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/custom.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/dark.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/rtl.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/customizer.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'icon/icofont/css/icofont.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'notificacion/css/animate.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/modal_cargando.css' %}"/>
+        <style>
+            @media (min-width: 1300px) {
+                .modal-lg, .modal-xl {
+                    max-width: 1300px;
+                }
+            }
+
+            @media (max-width: 1200px) {
+                .modal-lg, .modal-xl {
+                    max-width: 1200px;
+                }
+            }
+
+            @media (max-width: 1025px) {
+                .modal-lg, .modal-xl {
+                    max-width: 1024px;
+                }
+            }
+
+            @media (max-width: 1024px) {
+                .modal-lg, .modal-xl {
+                    max-width: 1000px;
+                }
+            }
+
+
+            @media (max-width: 800px) {
+                .modal-lg, .modal-xl {
+                    max-width: 750px;
+                }
+            }
+
+            .icon-2x {
+                font-size: 1.5em;
+            }
+
+            .icon-3x {
+                font-size: 3em;
+            }
+
+            .icon-4x {
+                font-size: 4.5em;
+            }
+
+            .icon-5x {
+                font-size: 6em;
+            }
+
+            .dark h4, .dark h3 {
+                color: white;
+            }
+
+            .light label {
+                color: black;
+            }
+
+            .dark .modal-body, .dark .modal-header, .dark .modal-footer {
+                background-color: #11141c;
+            }
+
+            ::-webkit-scrollbar {
+                width: 11px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background-color: #e4e4e4;
+                border-radius: 100px;
+            }
+
+            .siderbar + .main-content .iq-navbar-header .iq-header-image {
+                height: 85px !important;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background-color: rgba(127, 127, 127, 0.84);
+                border-radius: 100px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+            .modal-header h2 {
+                color: white !important;
+            }
+            .modal-header{
+                padding-top:3px;
+                padding-bottom: 3px;
+            }
+            .btn-cerrar{
+                padding: 1px 1px 1px 1px;
+                font-size: 24pt !important;
+                font-weight: 900;
+                color: white !important;
+            }
+            .modal-content{
+                border-radius: 15px;
+                border: 4px solid;
+            }
+            /*.tool_tip:hover:after {
+                 background:rgba(0,0,0,0.7);
+                 color:#fff;
+                 content:attr(rel);
+                 display:block;
+                 margin-top:-42px;
+                 position:absolute !important;
+                 white-space:nowrap;
+                z-index: 99999999 !important;
+            }*/
+        </style>
+        {% block style %}{% endblock %}
+    </head>
+    <body class="">
+        {% block flotante %}{% endblock %}
+        {% block modal %}{% endblock %}
+        {% include 'general/menu_lat.html' %}
+
+        <main class="main-content">
+            <div class="position-relative">
+                <nav class="nav navbar navbar-expand-lg navbar-light iq-navbar">
+                    <div class="container-fluid navbar-inner">
+                        <a href="{% url 'general_menu' %}" class="navbar-brand">
+                            <img src="{% static 'img/logo.png' %}" style="width: 2em;" alt="logo">
+                            <h5 class="logo-title pt-1">{{ request.session.empresa.n_app }}</h5>
+                        </a>
+                        <div class="sidebar-toggle" data-toggle="sidebar" data-active="true">
+                            <i class="icon">
+                                <svg width="20px" height="20px" viewBox="-1 1 24 24">
+                                    <path fill="currentColor"
+                                          d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"/>
+                                </svg>
+                            </i>
+                        </div>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon">
+                                <span class="mt-2 navbar-toggler-bar bar1"></span>
+                                <span class="navbar-toggler-bar bar2"></span>
+                                <span class="navbar-toggler-bar bar3"></span>
+                            </span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="mb-2 navbar-nav ms-auto align-items-center navbar-list mb-lg-0">
+                                <li class="nav-item dropdown">
+                                    <a class="py-0 nav-link d-flex align-items-center" href="#" id="navbarDropdown"
+                                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src="{{ request.session.avatar }}" alt="User-Profile"
+                                             class="img-fluid avatar avatar-50 avatar-rounded logo_avatar">
+                                        <div class="caption ms-3 d-none d-md-block ">
+                                            <h6 class="mb-0 caption-title">{{ request.user.first_name | title }}</h6>
+                                            <p class="mb-0 caption-sub-title">{{ request.user.last_name | title }}</p>
+                                        </div>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <!--li><a class="dropdown-item" href="../dashboard/app/user-profile.html">Profile</a></li>
+                                        <li><a class="dropdown-item" href="../dashboard/app/user-privacy-setting.html">Privacy Setting</a></li-->
+                                        <li>
+                                            <a class="dropdown-item" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPers" role="button" aria-controls="offcanvas">
+                                                <i class="icofont-settings"></i>
+                                                <span>Personalizar</span>
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li id="logout">
+                                            <a class="dropdown-item" href="{% url 'general_logout' %}">
+                                                <i class="icon icofont-logout"></i>
+                                                <span>Salir</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="iq-navbar-header" style="height: 130px;">
+                    <div class="container-fluid iq-container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="flex-wrap d-flex justify-content-be-tween align-items-center">
+                                    <div>
+                                        <h2 style="font-weight: 900;"><strong>{% block pagina %}{% endblock %}</strong></h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="iq-header-img" style="height: 160px !important;">
+                        <img src="{% static 'dashboard/assets/images/dashboard/top-header.png' %}" alt="header"
+                             class="theme-color-default-img img-fluid w-100 h-100 animated-scaleX">
+                        <img src="{% static 'dashboard/assets/images/dashboard/top-header1.png' %}" alt="header"
+                             class="theme-color-purple-img img-fluid w-100 h-100 animated-scaleX">
+                        <img src="{% static 'dashboard/assets/images/dashboard/top-header2.png' %}" alt="header"
+                             class="theme-color-blue-img img-fluid w-100 h-100 animated-scaleX">
+                        <img src="{% static 'dashboard/assets/images/dashboard/top-header3.png' %}" alt="header"
+                             class="theme-color-green-img img-fluid w-100 h-100 animated-scaleX">
+                        <img src="{% static 'dashboard/assets/images/dashboard/top-header4.png' %}" alt="header"
+                             class="theme-color-yellow-img img-fluid w-100 h-100 animated-scaleX">
+                        <img src="{% static 'dashboard/assets/images/dashboard/top-header5.png' %}" alt="header"
+                             class="theme-color-pink-img img-fluid w-100 h-100 animated-scaleX">
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid py-0">
+                <div class="row">
+                    <div class="col-12">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+
+            <footer class="footer fixed-bottom">
+                <div class="footer-body text-center align-content-center justify-content-center">
+                    ©
+                    <script>document.write(new Date().getFullYear())</script>
+                    {{ request.session.empresa.razon_social }}
+                </div>
+            </footer>
+        </main>
+
+        {% block progcx_act %}{% endblock %}
+        {% include 'general/settings.html' %}
+        {% include 'general/modal_cargando.html' %}
+
+        <script src="{% static 'dashboard/assets/js/core/libs.min.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/core/external.min.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/charts/widgetcharts.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/charts/vectore-chart.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/charts/dashboard.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/plugins/fslightbox.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/plugins/setting.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/plugins/form-wizard.js' %}"></script>
+        <script src="{% static 'dashboard/assets/vendor/aos/dist/aos.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/hope-ui.js' %}"></script>
+        <script src="{% static 'notificacion/bootstrap_notify/bootstrap-notify.js' %}"></script>
+        <script src="{% static 'notificacion/js/notificacion.js' %}"></script>
+        <script src="{% static 'js/dataTables.buttons.min.js' %}"></script>
+        <script src="{% static 'js/jszip.min.js' %}"></script>
+        <script src="{% static 'js/pdfmake.min.js' %}"></script><!-- pdf -->
+        <script src="{% static 'js/buttons.html5.min.js' %}"></script>
+        <script src="{% static 'js/vfs_fonts.js' %}"></script>
+        <script>
+            $(document).ready(function (e){
+                $('body').addClass("theme-color-gray");
+                $('aside').removeClass("sidebar-white navs-rounded-all");
+                $('aside').addClass("sidebar-dark navs-pill");
+                $("nav").addClass("nav-glass");
+
+                $('#personaModal').modal({backdrop: 'static', keyboard: false});
+
+                $("#actualizar_pcte").on("click", function (e) {
+                    $.ajax({
+                        url: $("#busqPaciente").attr('action'),
+                        type: $("#busqPaciente").attr('method'),
+                        data: $("#busqPaciente").serialize(),
+                        success: function (data) {
+                            if (data.ind == 2) {
+                                let pcte = data.paciente;
+                                $("#tp_id_pcte").val($("select[name=tp_id_pcte] option:selected").val());
+                                $("#no_id_pcte").val($("input[name=no_id_pcte]").val());
+                                $("input[name=p_nombre]").val(pcte.p_nombre);
+                                $("input[name=s_nombre]").val(pcte.s_nombre);
+                                $("input[name=p_apellido]").val(pcte.p_apellido);
+                                $("input[name=s_apellido]").val(pcte.s_apellido);
+                                $("input[name=tel_pcte]").val(pcte.tel);
+                                $("input[name=f_nacimiento]").val(pcte.f_nacimiento);
+                                $("input[name=dir_pcte]").val(pcte.dir);
+                                $("input[name=email_pcte]").val(pcte.email);
+                                $("input[name=other_tel_pcte]").val(pcte.other_tel);
+                                $("#departamento > option[value='"+pcte.departamento+"']").attr("selected", true);
+                                $("#municipio").empty();
+                                $("#municipio").append($("<option>", {
+                                        value: pcte.municipio['id'],
+                                        text: pcte.municipio['municipio']
+                                    }));
+                                $("select[name=sexo] > option[value='"+pcte.sexo+"']").attr("selected", true);
+                                $("select[name=grupo_pcte] > option[value='"+pcte.grupo_pcte+"']").attr("selected", true);
+                                $("select[name=rh_pcte] > option[value='"+pcte.rh_pcte+"']").attr("selected", true);
+                                $("#personaModal").modal("show");
+                            } else {
+                                $("#personaModal").modal("show");
+                            }
+                        }
+                    })
+                    return false;
+                })
+
+                $("#busqPaciente").on("submit", function (e) {
+                    $("#pcte_ref span").text("");
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        type: $(this).attr('method'),
+                        data: $(this).serialize(),
+                        success: function (data) {
+                            if (data.ind == 2) {
+                                let pcte = data.paciente;
+                                $("#pcte_ref").show();
+                                $("#id_pcte").val(pcte.id);
+                                $("#nombre_view").text(pcte.p_nombre + ' ' +pcte.s_nombre + ' ' +pcte.p_apellido+ ' ' +pcte.s_apellido);
+                                $("#documento_view").text(pcte.documento);
+                                $("#direccion_view").text(pcte.dir);
+                                $("#telefono_view").text(pcte.tel);
+                                $("#email_view").text(pcte.email);
+                            } else {
+                                $("#PacienteForm")[0].reset();
+                                $("#tp_id_pcte").val($("select[name=tp_id_pcte] option:selected").val());
+                                $("#no_id_pcte").val($("input[name=no_id_pcte]").val());
+                                $("#personaModal").modal("show");
+                            }
+                        }
+                    })
+                    return false;
+                })
+
+                $("#PacienteForm").on("submit", function (e) {
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        type: $(this).attr('method'),
+                        data: $(this).serialize(),
+                        success: function (data) {
+                            if (data.ind == 2) {
+                                $("#PacienteForm")[0].reset();
+                                $("#personaModal").modal("hide");
+                                $("#btn_busq_pcte").click();
+                            } else {
+                                window.location.reload();
+                            }
+                        },
+                        error: function (e){
+                            window.location.reload();
+                        }
+                    });
+                    return false;
+                })
+                {% include 'general/busq_mpio.js' %}
+            });
+            $('a[data-bs-toggle="tooltip"]').click(function (e){
+                $("#gifModal").modal("show");
+            });
+        </script>
+        {% block scripts %}{% endblock %}
+    </body>
+</html>

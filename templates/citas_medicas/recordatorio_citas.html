@@ -1,0 +1,342 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block titulo_pag %}
+    Citas Medicas
+{% endblock %}
+
+{% block titulo %}
+    Envio recordatorio
+{% endblock %}
+
+{% block sub_titulo %}
+    Citas médicas
+{% endblock %}
+
+{% block menu_cartera %}
+    active
+{% endblock %}
+
+{% block style %}
+    <style type="text/css">
+        td {
+            white-space: normal !important;
+        }
+        #datatable td {
+            white-space: normal !important;
+            margin: 8px;
+            padding: 2px;
+        }
+        #datatable th {
+            padding: 2px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% include 'modal_cargando.html' %}
+    <div class="row">
+        <div class="col-12 mb-3 mt-lg-2 mt-5">
+            <div class="col-sm-12">
+                <div class="table table-responsive" style="overflow-y: scroll; height: 631px; overflow-x: scroll;">
+                    <table style="font-size: 9pt !important;" id="datatable" class="enviar_aten table table-bordered border-primary table-hover">
+                        <thead class="text-center" style="vertical-align: middle;">
+                            <tr style="font-size: 7pt;" class="text-white bg-primary border-primary">
+                                <th class="border-primary" scope="col">Fecha<br>Cita</th>
+                                <th class="border-primary" scope="col">Doc. id</th>
+                                <th class="border-primary" scope="col">Nombre</th>
+                                <th class="border-primary" scope="col">Entidad</th>
+                                <th class="border-primary" scope="col">Especialidad</th>
+                                <th class="serv_t border-primary" scope="col">Servicio</th>
+                                <th class="border-primary" scope="col">Enviar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for c in citas_h %}
+                                <tr>
+                                    <td>{{ c.fecha_cita }}</td>
+                                    <td>{{ c.identificacion }}</td>
+                                    <td>{{ c.nombre }}</td>
+                                    <td>{{ c.entidad }}</td>
+                                    <td>{{ c.especialidad }}</td>
+                                    <td class="serv_t">{{ c.servicio }}</td>
+                                    <td>
+                                        <div class="row text-center">
+                                            <input type="checkbox" class="form-check" value="{{ c.id_cita }}">
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="text-center" style="vertical-align: middle; text-transform: uppercase;">
+                            <tr style="font-size: 7pt;" class="text-white bg-primary border-primary">
+                                <th class="border-primary" scope="col">Fecha<br>Cita</th>
+                                <th class="border-primary" scope="col">Doc. id</th>
+                                <th class="border-primary" scope="col">Nombre</th>
+                                <th class="border-primary" scope="col">Entidad</th>
+                                <th class="border-primary" scope="col">Especialidad</th>
+                                <th class="serv_t border-primary" scope="col">Servicio</th>
+                                <th class="border-primary" scope="col">Enviar</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts%}
+    <script>
+        $(document).ready(function (e){
+            function buscar(id) {
+                var input, filter, table, tr, td, i, txtValue;
+                input = document.getElementById("search");
+                filter = input.value.toUpperCase();
+                table = document.getElementById("datatable");
+                tr = table.getElementsByTagName("tr");
+
+                for (i = 0; i < tr.length; i++) {
+                    td = tr[i].getElementsByTagName("td")[id];
+                    if (td) {
+                        txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            tr[i].style.display = "";
+                        }
+                        else {
+                            tr[i].style.display = "none";
+                        }
+                    }
+                }
+            }
+            setTimeout(function(){
+                $("#datatable_wrapper").prepend("<div id='contentExt' class='row'></div>");
+                $(".dt-buttons").prependTo("#contentExt");
+                $("#datatable_filter").appendTo("#contentExt");
+                $("#datatable_filter input").addClass("border-primary");
+                $(".dt-buttons").addClass("col-6");
+                $("#datatable_filter").addClass("col-6");
+                $(".buttons-excel").text('Exportar a Excel');
+                $(".buttons-excel").addClass('btn btn-sm btn-primary pt-1 pb-1 pl-3 pr-3');
+                $(".buttons-excel").prepend("<i class='icofont-file-excel'></i>&emsp;");
+                let titulo_proceso = $("#titulo_proceso").text().replace(/[^A-Za-z]/g, '')
+                if(titulo_proceso == "Listadodeespera"){
+                    $(".en_espera").attr('disabled', false);
+                    $(".en_espera").removeClass("espera");
+                    $(".en_espera").removeClass("btn-info");
+                    $(".en_espera").addClass("btn-secondary");
+                }
+            },500);
+
+            $('#datatable').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel',
+                    /*'copy',
+                    'csvHtml5',
+                    'pdfHtml5'*/
+                ]
+            });
+
+            $(".search_btn").click(function (e){
+                buscar($(this).val());
+            });
+
+            $(".enviar_aten").on('click', '.descartar', function (data) {
+                $("#desCitaModal").modal("show");
+                $("#no_aten_des").val($(this).val());
+            });
+
+
+            $("#descartarForm").on('submit', function (data) {
+                $.ajax({
+                    url:   '{% url 'solicitud_whatsapp' %}',
+                    type:  "post",
+                    data: $(this).serialize(),
+                    beforeSend: function () {
+                        $('#gifModal').modal('show');
+                    },
+                    success:  function (data) {
+                        $('#gifModal').modal('hide');
+                        $("#no_atencion").val("");
+                        $("#no_aten").val("");
+                        $("#observacion_des").val("");
+                        $("#t_id").val("");
+                        $("#no_id").val("");
+                        $("#desCitaModal").modal("hide");
+                        $("#descartarForm")[0].reset()
+                        if (data.ind == 2) {
+                            window.location.reload();
+                        }else{
+                            $("#desCitaModal").modal("hide");
+                            notificacion(data.ind,data.aviso);
+                        }
+                    }
+                });
+                return false;
+            });
+
+            notificacion({{ ind }},"{{ aviso }}");
+            $(".enviar_aten").on('click', '.atender', function (data) {
+                $("#tp_atencion").val($("#t_cita_"+ $(this).val()).text());
+                $("#no_atencion").val($(this).val());
+                $("#citas").empty();
+                $("#paciente").empty();
+                $("#solCitaModal").modal("show");
+                let identificacion= $("#identificacion_"+ $(this).val()).text();
+                $("#no_id").val(identificacion.replace(/[^0-9]/g, ''));
+                let tp_id = identificacion.replace(/[^A-Z]/g, '').substr(0, 2);
+                $("#t_id").val(tp_id);
+                $("#consultar_paciente").delay(100).click();
+            });
+
+            $(".enviar_aten").on('click', '.espera', function (data) {
+                var no_aten = $(this).val();
+                $.ajax({
+                    url:   '{% url 'solicitud_whatsapp' %}',
+                    type:  'post',
+                    data: {
+                        no_aten: no_aten,
+                        tp_op: "Espera cita",
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    beforeSend: function () {
+                        $(this).attr('disabled','disabled');
+                        $('#gifModal').modal('show');
+                    },
+                    success:  function (data) {
+                        $('#gifModal').modal('hide');
+                        $("#no_atencion").val("");
+                        $("#t_id").val("");
+                        $("#no_id").val("");
+                        $("#solCitaModal").modal("hide");
+                        if (data.ind == 2) {
+                            window.location.reload();
+                        }
+                    }
+                })
+            });
+
+            $(".enviar_aten").on('click', '.seleccionar', function (data) {
+                let btn = $(this)
+                let no_aten = btn.val();
+                $.ajax({
+                    url:   '',
+                    type:  'post',
+                    data: {
+                        no_aten: no_aten,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    beforeSend: function () {
+                        $(this).attr('disabled','disabled');
+                        $('#gifModal').modal('show');
+                    },
+                    success:  function (data) {
+                        $('#gifModal').modal('hide');
+                        if (data.ind == 1) {
+                            $("#"+no_aten).find("button").removeAttr('disabled');
+                            notificacion(data.ind, data.aviso);
+                            btn.attr('disabled', true);
+                        }
+                        else if (data.ind == 2) {
+                            $("#"+no_aten).find("button").removeAttr('disabled');
+                            btn.attr('disabled', true);
+                            notificacion(data.ind, data.aviso);
+                        }else{
+                            btn.parent().parent().parent().remove();
+                            notificacion(data.ind, data.aviso);
+                        }
+                    }
+                });
+                return false;
+            });
+
+
+            $("#consultar_paciente").click(function (e) {
+                if($("#no_id").val() !=""){
+                    var no_id = $("#no_id").val();
+                    var t_id = $("#t_id").val();
+                    $.ajax({
+                        url:   '',
+                        type:  'post',
+                        data: {
+                            t_id: t_id,
+                            no_id: no_id,
+                            tramite: $("#tp_atencion").val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success:  function (data) {
+                            $("#citas").empty();
+                            $("#paciente").empty();
+                            if (data.ind == 2){
+                                $("#paciente").text(data.citas[0].nombre);
+                                for (var i = 0; i < (data.citas).length; i++) {
+                                    $("#citas").append(' \
+                                        <tr class="{{ d.id_linea }}"> \
+                                            <td class="text-center">'+data.citas[i].fecha+'</td> \
+                                            <td colspan="">'+data.citas[i].convenio+'</td> \
+                                            <td class="text-center">'+data.citas[i].especialidad+'</td> \
+                                            <td class="text-center">'+data.citas[i].telefono+'</td> \
+                                            <td class="p-0 m-0 text-center '+data.citas[i].ids+'"> \
+                                                <div class="form-group mt-1"> \
+                                                    <button type="button" class="btn btn-success btn-sm p-1 send_msg" value="'+data.citas[i].ids+'"> \
+                                                        <i class="icofont-check"></i> \
+                                                    </button> \
+                                                </div> \
+                                            </td> \
+                                        </tr>');
+                                }
+                            }
+                            else if (data.ind == 1){
+                                notificacion(data.ind,data.aviso);
+                            }
+                            else{
+                                window.location.reload();
+                            }
+                        }
+                    });
+                }
+            });
+
+            function send_msg(tp_op) {
+                let td = $(this).parent().parent().parent();
+                let tis = $(this);
+                let no_aten = $("#no_atencion").val();
+                $.ajax({
+                    url: '{% url 'solicitud_whatsapp' %}',
+                    type: 'post',
+                    data: {
+                        id_cita: $(this).val(),
+                        no_aten: no_aten,
+                        tp_op: tp_op,
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    },
+                    beforeSend: function () {
+                        tis.attr('disabled', 'disabled');
+                        $('#gifModal').modal('show');
+                    },
+                    success: function (data) {
+                        td.remove();
+                        $('#gifModal').modal('hide');
+                        $("#no_atencion").val("");
+                        $("#t_id").val("");
+                        $("#no_id").val("");
+                        $("#solCitaModal").modal("hide");
+                        if (data.ind == 2) {
+                            notificacion(data.ind, data.aviso);
+                            window.location.reload();
+                        }else{
+                            notificacion(data.ind, data.aviso);
+                        }
+                    }
+                });
+            }
+
+            $("#citas").on("click",".send_msg", function(e){
+                let tp_op = "atender";
+                send_msg.call(this, tp_op);
+                return false;
+            });
+        });
+    </script>
+ {% endblock %}

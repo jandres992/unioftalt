@@ -1,0 +1,134 @@
+{% extends 'dashboard.html' %}
+
+{% load static %}
+
+{% block titulo %}
+    Turno digital
+{% endblock %}
+
+{% block pagina %}
+    Gestión - Turno digital
+{% endblock %}
+
+{% block style %}
+    <style>
+        .table {
+            font-size: 8pt !important;
+            color: black;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="col-12">
+        <h4 class="">Turnos Pendientes</h4>
+        <hr class="bg-primary border-primary" style="border: solid 2px;">
+        <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-2 row-cols-1">
+            {% if  ind_t != 0 %}
+                {% for k, v in servicios.items %}
+                    <div class="col">
+                        <div class="card bg-soft-{{ v.color }} p-1">
+                            <div class="row g-0 pb-3">
+                                <div class="col-12 text-center mt-1 p-0">
+                                    <p class="mb-2"><strong>{{ k }}</strong></p>
+                                </div>
+                                <div class="col-md-3 col-12 d-flex align-items-center justify-content-center align-content-center text-center">
+                                    <i class="icofont-{{ v.icon }}" style="font-size: 40pt;"></i>
+                                </div>
+                                <div class="col-md-9 col-12">
+                                    <p class="mb-0" style="font-size: 10pt;">Turnos Pendientes: <strong>{{ v.valor }}</strong></p>
+                                    <p class="mb-0" style="font-size: 10pt;">Hora llegada prox. turno:  <strong>{{ v.fecha }}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <h6 class="">&emsp;No hay turnos pendientes por atender</h6>
+            {% endif %}
+        </div>
+        <hr class="bg-primary border-primary" style="border: solid 2px;">
+    </div>
+
+    <div class="col-12 p-0">
+        <div class="card border-primary" style="border: solid 1px;">
+            <div class="card-header bg-primary p-2">
+                <h5 class="text-white" style="font-size: 11pt;">Turnos atendidos {{ fecha_turnos }}</h5>
+            </div>
+            <div class="card-body">
+                <div class="col-12">
+                    <form action="{% url "dig_admin" %}" method="get">
+                        <div class="row">
+                            <label><strong>Ingrese rango de fechas para realizar la consulta:</strong></label>
+                            <div class="input-group">
+                                <label class="col-4" style="font-size: 10pt;">Fecha inicial:</label>
+                                <label class="col-4" style="font-size: 10pt;">Fecha final:</label>
+                            </div>
+                            <div class="input-group">
+                                <input class="col-4 form-control form-control-sm border-primary" placeholder="Fecha inicial" name="f_ini" type="date" data-date="" data-date-format="YYYY-MM-DD" autocomplete="off" required>
+                                <input class="col-4 form-control form-control-sm border-primary" placeholder="Fecha final" name="f_fin" type="date" data-date="" data-date-format="YYYY-MM-DD" autocomplete="off" required>
+                                <button class="col-4 btn btn-sm btn-primary btn-block text-center" style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;" type="submit"><i class="fa fa-search"></i> Consultar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table id="example2" class="table table-responsive table-bordered table-hover">
+                        <thead>
+                            <tr class="bg-primary text-white">
+                                <th>USUARIO</th>
+                                {% for m in modulos %}
+                                    <th>{{ m.servicio }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody class="text-center" style="font-size: 10pt;">
+                            {% for a, b in atenciones.items %}
+                                <tr>
+                                    <td>{{ a }}</td>
+                                    {% for x, y in b.items %}
+                                        <td>
+                                            {% for r, s in y.items %}
+                                                {{ r }}: {{ s }}<br>
+                                            {% endfor %}
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="bg-primary text-white">
+                                <th>USUARIO</th>
+                                {% for m in modulos %}
+                                    <th>{{ m.servicio }}</th>
+                                {% endfor %}
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'assets/js/charts/widgetcharts.js'  %}"></script>
+    <script>
+        $(document).ready(function (e){
+            $('#menu_digiturno').addClass('active');
+
+            notificacion({{ ind }},"{{ aviso }}");
+
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
+{% endblock %}

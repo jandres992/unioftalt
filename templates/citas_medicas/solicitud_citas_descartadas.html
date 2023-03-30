@@ -1,0 +1,149 @@
+{% extends 'dashboard.html' %}
+
+{% load static %}
+
+{% block titulo %}
+    Solucitudes dscartadas
+{% endblock %}
+
+{% block pagina %}
+    Solucitudes dscartadas - Citas Médicas
+{% endblock %}
+
+{% block style %}
+    <style type="text/css">
+        td {
+            white-space: normal !important;
+        }
+        #datatable td {
+            white-space: normal !important;
+            margin: 8px;
+            padding: 2px;
+        }
+        #datatable th {
+            padding: 2px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% include 'modal_cargando.html' %}
+    <div class="row">
+        <div class="col-md-10 col-12 mb-3">
+            <form action="{% url "sol_cmedicas_des" %}" method="get">
+                <div class="row">
+                    <label style="font-size: 10pt;">Seleccione un rango de fechas para realizar bisqueda personalizada:</label>
+                    <div class="input-group">
+                        <input class="col-3 form-control form-control-sm border-primary" name="f_ini" type="date" data-date="" data-date-format="YYYY-MM-DD" required>
+                        <input class="col-3 form-control form-control-sm border-primary" name="f_fin" type="date" data-date="" data-date-format="YYYY-MM-DD" required>
+                        <button class="col-3 btn btn-sm btn-primary btn-block text-center text-white" type="submit"><i class="icofont-checked"></i> Consultar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-12 mb-3 mt-lg-2 mt-5">
+            <div class="col-sm-12">
+                <hr>
+                <h4>Registros del {{ fecha_queryset }}</h4>
+                <hr>
+            </div>
+            <div class="col-sm-12">
+                <div class="table table-responsive" style="overflow-y: scroll; height: 631px; overflow-x: scroll;">
+                    <table style="font-size: 9pt !important;" id="datatable" class="enviar_aten table table-bordered border-primary table-hover">
+                        <thead class="text-center" style="vertical-align: middle;">
+                            <tr style="font-size: 7pt;" class="text-white bg-primary border-primary">
+                                <th class="border-primary" scope="col">Fecha <br>Atención</th>
+                                <th class="border-primary" scope="col">Tipo <br>Solicitud</th>
+                                <th class="border-primary" scope="col">Doc. id</th>
+                                <th class="border-primary" scope="col">Nombre</th>
+                                <th class="border-primary" scope="col">Telefono</th>
+                                <th class="border-primary" scope="col">Entidad</th>
+                                <th class="border-primary" scope="col">Email</th>
+                                <th class="border-primary" scope="col">Espec.</th>
+                                <th class="border-primary" scope="col">Servicio</th>
+                                <th class="border-primary" scope="col">Fecha<br>cita</th>
+                                <th class="border-primary" scope="col">No.<br>Aut</th>
+                                <th class="border-primary" scope="col">Observación</th>
+                                <th class="border-primary" scope="col">Usuario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in data %}
+                                <tr style="text-align: center;font-size: 8pt;">
+                                    <td class="p-0">{{ d.fecha_aten }}</td>
+                                    <td class="p-0">{{ d.tramite.tramite }}</td>
+                                    <td class="p-0">{{ d.pcte.tipo_id.tipo_id }} {{ d.pcte.numero_id }}</td>
+                                    <td class="p-0">{{ d.pcte.p_nombre }} {{ d.pcte.s_nombre }} {{ d.pcte.p_apellido }} {{ d.pcte.s_apellido }}</td>
+                                    <td class="p-0">{{ d.pcte.telefono_movil }}<br>
+                                        <strong>Tel ref:</strong><br>
+                                        <strong>(</strong>{{ d.pcte.telefono_fijo }}<strong>)</strong>
+                                    </td>
+                                    <td class="p-0">{{ d.eps.nombre }}<br>{{ d.regimen.regimen }}</td>
+                                    <td class="p-0">{{ d.pcte.email }}</td>
+                                    <td class="p-0">{{ d.especialidad.nombre }}</td>
+                                    <td class="p-0">{{ d.servicio.servicio }}</td>
+                                    <td class="p-0">{{ d.fecha_cita }}</td>
+                                    <td class="p-0">{{ d.no_aut }}</td>
+                                    <td class="p-0">{{ d.observacion_des }}</td>
+                                    <td class="p-0">{{ d.usuario_atencion }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="text-center" style="vertical-align: middle; text-transform: uppercase;">
+                            <tr style="font-size: 7pt;" class="text-white bg-primary border-primary">
+                                <th class="border-primary" scope="col">Fecha<br>solicitud</th>
+                                <th class="border-primary" scope="col">Tipo<br>Sol.</th>
+                                <th class="border-primary" scope="col">Doc. id</th>
+                                <th class="border-primary" scope="col">Nombre</th>
+                                <th class="border-primary" scope="col">Telefono</th>
+                                <th class="border-primary" scope="col">Entidad</th>
+                                <th class="border-primary" scope="col">Email</th>
+                                <th class="border-primary" scope="col">Espec.</th>
+                                <th class="border-primary" scope="col">Servicio</th>
+                                <th class="border-primary" scope="col">Fecha<br>cita</th>
+                                <th class="border-primary" scope="col">No.<br>Aut</th>
+                                <th class="border-primary" scope="col">Observación</th>
+                                <th class="border-primary" scope="col">Usuario</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts%}
+    <script src="{% static 'js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'js/jszip.min.js' %}"></script>
+    <script src="{% static 'js/pdfmake.min.js' %}"></script><!-- pdf -->
+    <script src="{% static 'js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'js/vfs_fonts.js' %}"></script> <!-- pdf -->
+    <script>
+        $(document).ready(function (e) {
+            $('#menu_citas').addClass('active');
+
+            $('#datatable').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'excel',
+                    /*'copy',
+                    'csvHtml5',
+                    'pdfHtml5'*/
+                ]
+            });
+            setTimeout(function () {
+                $("#datatable_wrapper").prepend("<div id='contentExt' class='row'></div>");
+                $(".dt-buttons").prependTo("#contentExt");
+                $("#datatable_filter").appendTo("#contentExt");
+                $("#datatable_filter input").addClass("border-primary");
+                $(".dt-buttons").addClass("col-6");
+                $("#datatable_filter").addClass("col-6");
+                $(".buttons-excel").text('Exportar a Excel');
+                $(".buttons-excel").parent().attr('style', 'padding-left:0px !important');
+                $(".buttons-excel").addClass('btn btn-sm btn-primary pt-1 pb-1 pl-0 pr-3');
+                $(".buttons-excel").prepend("<i class='icofont-file-excel'></i>&emsp;");
+            }, 50);
+        });
+    </script>
+ {% endblock %}

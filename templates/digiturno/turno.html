@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+    {% load static %}
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Turno Digital - {{ empresa.n_app }}</title>
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="{% static 'img/logo.png' %}"/>
+
+        <!-- Hope ui Library -->
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/core/libs.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/hope-ui.css' %}"/>
+        <link rel="stylesheet" href="{% static 'dashboard/assets/css/custom.min.css' %}" />
+        <link rel="stylesheet" href="{% static 'icon/icofont/css/icofont.css' %}" />
+        <link rel="stylesheet" href="{% static 'notificacion/css/animate.css' %}" />
+        <style>
+            body{
+                overflow-x: hidden;
+            }
+
+            @media (min-width: 1025px) {
+                .teclado, .btn_delete{
+                    width: 100px;
+                    height: 100px;
+                    font-size: 24pt;
+                }
+            }
+
+            @media (max-width: 1024px) {
+                #logo p {
+                    font-size: 20pt;
+                }
+
+                .teclado, .btn_delete {
+                    width: 80px;
+                    height: 80px;
+                    font-size: 20pt;
+                }
+            }
+            .teclado:hover, .btn_delete:hover{
+                background-color: rgba(255, 255, 255, 0.49);
+                color: #050505;
+            }
+
+            .btn_delete:hover{
+                background-color: rgba(255, 255, 255, 0.49);
+                color: red;
+            }
+            .boxed{
+                background-color: #1a1a1a;
+            }
+        </style>
+
+        <style media="print">
+            @page {
+                size: 7.6cm 5cm;
+                size: portrait;
+                margin: 8px;
+            }
+            .no_print {
+                display:none;
+            }
+        </style>
+    </head>
+    <body class="boxed">
+        <div class="boxed-inner m-5">
+            <main class="main-content">
+                <nav class="nav navbar navbar-expand-lg navbar-light iq-navbar p-0 m-0">
+                    <div class="col-12 d-flex">
+                        <div class="col-5" style="padding-left: 30px !important;">
+                            <img width="240" src="{% static 'img/logo_ext.png' %}">
+                        </div>
+                        <div class="col-5 d-flex align-items-center">
+                            <h2 class="pt-2" style="font-family: 'good times'; font-weight: 900;">Turno Digital</h2>
+                        </div>
+                        <div class="col-2 d-flex justify-content-end align-items-center pr-2">
+                            <div class="btn-group">
+                                <a class="nav-link text-dark" onclick="window.location.reload();" role="button">
+                                    <i class="icofont-refresh"></i>
+                                </a>
+                                <a class="nav-link text-dark" id="full_screen" role="button">
+                                    <i class="icofont-resize"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="container-fluid p-2">
+                    <div class="no_print" id="identificacion_view">
+                        <div class="col-12 p-1">
+                            <div class="row">
+                                <div class="col-12 col-sm-6 p-md-5 pl-md-5">
+                                    <div class="col-12 mb-3">
+                                        <label class="text-dark" style="font-weight: 900; font-size: 18pt;">Seleccione el tipo de identificación del paciente:</label>
+                                        <select class="form-select form-select-lg border-dark" id="tp_id">
+                                            <option value="">Seleccione</option>
+                                            {% for t in tipo_id %}
+                                                <option value="{{ t.id }}">{{ t.tipo_id }} - {{ t.detalle }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <hr class="mt-0">
+                                    <div class="col-12 mb-3" style="display: none;" id="no_id_content">
+                                        <label class="text-dark"  style="font-weight: 900; font-size: 18pt;">Número de identificación del paciente:</label>
+                                        <input type="text" id="no_id" class="campo form-control form-control-lg border-dark teclado_text" autocomplete="off">
+                                    </div>
+                                    <hr class="mt-0">
+                                    <div class="col-12 p-3 mb-3">
+                                        <div class="row">
+                                            <button class="btn btn-block btn-dark" style="font-size:18pt;" id="continuarBtn">
+                                                <b><i class="icofont-arrow-right"></i></b>&emsp;Siguiente
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 mb-3" id="tel_camp" style="display: none;">
+                                        <label>Telefono: (número telefonico de quien esta sacando el turno)</label>
+                                        <input autocomplete="off" type="text" minlength="10" id="tel" {% if conf.tel == False %} value="0000000000"{% endif %} class="campo form-control form-control-lg border-dark">
+                                    </div>
+
+                                    <div class="col-12 p-3 mb-3">
+                                        <div class="row">
+                                            <button class="btn btn-block btn-dark" style="font-size:18pt; display: none;" id="sol_turno_btn">
+                                                <b><i class="icofont-arrow-right"></i></b>&emsp;Continuar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6 p-3 text-center align-content-center justify-content-center">
+                                    <div class="d-flex text-center align-content-center justify-content-center">
+                                        <table class="table_teclado" style="display: none;">
+                                            <tr>
+                                                <td><button class="btn btn-sm btn-dark teclado">1</button></td>
+                                                <td><button class="btn btn-sm btn-dark teclado">2</button></td>
+                                                <td><button class="btn btn-sm btn-dark teclado">3</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td><button class="btn btn-sm btn-dark teclado">4</button></td>
+                                                <td><button class="btn btn-sm btn-dark teclado">5</button></td>
+                                                <td><button class="btn btn-sm btn-dark teclado">6</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td><button class="btn btn-sm btn-dark teclado">7</button></td>
+                                                <td><button class="btn btn-sm btn-dark teclado">8</button></td>
+                                                <td><button class="btn btn-sm btn-dark teclado">9</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td><button class="btn btn-sm btn-dark teclado">0</button></td>
+                                                <td><button class="btn btn-sm btn-danger btn_delete">
+                                                    <i class="icofont-ui-close"></i>
+                                                </button></td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row no_print" style="display: none;" id="turnos_view">
+                        {% for s in servicios %}
+                            <div class="col-12 col-sm-6">
+                                <a class="card select_modal_turno" id="{{ s.id }}">
+                                    <div class="card-body p-0">
+                                        <div class="row align-items-center justify-content-center">
+                                            <div class="col-4 pl-2 text-center">
+                                                <div style="color:{{ s.color }} !important; font-size: 72pt !important; font-weight: 900;">
+                                                    <i class="icofont-{{ s.icon }}"></i>
+                                                </div>
+                                                <div class="text-black-50 text-warning">
+                                                    <svg width="20px" height="20px" viewBox="0 0 20 20" fill="orange">
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                    </svg>
+                                                    <svg width="20px" height="20px" viewBox="0 0 20 20" fill="orange">
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                    </svg>
+                                                    <svg width="20px" height="20px" viewBox="0 0 20 20" fill="orange">
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                    </svg>
+                                                    <svg width="20px" height="20px" viewBox="0 0 20 20" fill="orange">
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                    </svg>
+                                                    <svg width="20px" height="20px" viewBox="0 0 20 20" fill="orange">
+                                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                            <div class="col-8">
+                                                <h4><strong>{{ s.servicio }}</strong></h4>
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <button class="btn btn-sm rounded-pill p-0 pb-2">
+                                                    <h6 class="mb-0"><i class="icofont-double-right"></i>&emsp;Presione para continuar</h6>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <footer class="footer">
+                    <div class="footer-body text-secondary text-center">
+                        <ul class="left-panel list-inline mb-0 p-0"></ul>
+                        <div class="right-panel">
+                            ©<script>document.write(new Date().getFullYear())</script> {{ empresa.razon_social }}
+                        </div>
+                    </div>
+                </footer>
+            </main>
+
+            <!-- Modal -->
+            <div class="modal fade pr-0" id="modal_turno" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modal_turnoTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <img src="{% static 'img/logo.png' %}" width="40">&emsp;
+                            <h5 class="modal-title pl-2">Tipo de turno</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12" style="display: none;">
+                                    <input value="" id="tp_servicio">
+                                </div>
+                                <div class="col-12 d-flex">
+                                    <div class="card bg-light modal_turno p-1 m-2" id="general">
+                                        <div class="d-flex align-items-center justify-content-center">
+                                            <div class="d-flex flex-column text-center align-items-center justify-content-between ">
+                                                <h4><strong>GENERAL</strong></h4>
+                                                <div class="card-profile-progress text-secondary">
+                                                    <div style="font-size: 50pt !important; font-weight: 900;">
+                                                        <p><i class="icofont-users-social"></i></p>
+                                                    </div>
+                                                </div>
+                                                <div class="card-profile-progress">
+                                                    <h6>Para público sin ningún tipo de discapacidad o personas con acompañantes menores de 60 años.</h6>
+                                                </div>
+                                                <h6 class="mt-4 mb-0 text-black-50"><i class="icofont-double-right"></i>&emsp;Presione para continuar</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card bg-primary modal_turno p-1 m-2" id="preferencial">
+                                        <div class="d-flex flex-column text-center align-items-center justify-content-between">
+                                            <h4 class="text-white "><strong>PREFERENCIAL</strong></h4>
+                                            <div class="card-profile-progress text-white">
+                                                <div class="row">
+                                                    <div class="col-4" style="font-size: 50pt !important; font-weight: 900;">
+                                                        <p><i class="icofont-paralysis-disability"></i></p>
+                                                    </div>
+                                                    <div class="col-4" style="font-size: 50pt !important; font-weight: 900;">
+                                                        <p><i class="icofont-crutch"></i></p>
+                                                    </div>
+                                                    <div class="col-4" style="font-size: 50pt !important; font-weight: 900;">
+                                                        <p><i class="icofont-nurse"></i></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-profile-progress">
+                                                <h6 class="text-white">Para personas mayores de <strong>60</strong> años, personas con discapacidad o mujeres embarazadas.</h6>
+                                            </div>
+                                            <h6 class="mt-4 mb-3 text-white-50"><i class="icofont-double-right"></i>&emsp;Presione para continuar</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 d-flex text-center align-items-center justify-content-center mt-2">
+                                    <button class="btn btn-sm btn-danger rounded-pill p-3" data-bs-dismiss="modal" aria-label="Close">
+                                        <h4 class="mb-0 text-white"><i class="icofont-reply-all"></i>&emsp;Volver&emsp;</h4>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Library Bundle Script -->
+        <script src="{% static 'dashboard/assets/js/core/libs.min.js' %}"></script>
+        <!-- External Library Bundle Script -->
+        <script src="{% static 'dashboard/assets/js/core/external.min.js' %}"></script>
+        <script src="{% static 'dashboard/assets/js/hope-ui.js' %}"></script>
+        <script src="{% static 'notificacion/bootstrap_notify/bootstrap-notify.js' %}"></script>
+        <script src="{% static 'notificacion/js/notificacion.js' %}"></script>
+        <script>
+            $(document).ready(function (e){
+                var height = $(window).height();
+                $('.container-fluid').height(height - 240);
+
+                $(window).resize(function() {
+                    height = $(window).height();
+                    $('.container-fluid').height(height - 240);
+                });
+
+                if ((navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i))) {
+                    $("body").css('zoom','60%');
+                    $(".modal-dialog").css('width','100%');
+                }
+
+                var focused = null;
+
+                if("{{ conf.datos_pcte }}" == "False"){
+                    $('#tp_id').val("1");
+                    $('#no_id').val("0");
+                    $('#identificacion_view').hide();
+                    $('#turnos_view').show();
+                }
+
+                function toggleFullScreen() {
+                    if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen();
+                    } else {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        }
+                    }
+                }
+
+                $("#full_screen").click(function (e){
+                    toggleFullScreen();
+                });
+
+                const session = new WebSocket(`ws://${window.location.host}/ws/gen_turno/`)
+
+                session.onmessage = function(e) {
+                    const data = JSON.parse(e.data);
+                    console.log(data)
+                    if(data.type == "print_turn"){
+                        if(data.ind == 1){
+                            window.open("{% url 'dig_ticket_turno' %}?id_turno="+ data.data.id_turno, "_self");
+
+                        }
+                    }
+                }
+
+                $('#sol_turno_btn').on('click',function (e){
+                    if ($('#tp_identificacion').val() != "" && $('#no_id').val() != "" && $('#tel').val() != "") {
+                        $('#identificacion_view').hide();
+                        $('#turnos_view').show();
+                    }else{
+                        notificacion(0, "Faltan datos del paciente");
+                    }
+                });
+
+                $('.select_modal_turno').on('click',function (e){
+                    $("#tp_servicio").val($(this).attr("id"));
+                    $('#modal_turno').modal('show');
+                });
+
+                $(".btn_delete").click(function (e){
+                    focused.val(focused.val().substr(0, focused.val().length - 1));
+                });
+
+                $('.campo').click(function(){
+                    focused = $(this);
+                });
+
+                $("#continuarBtn").click(function (e){
+                    if ($("#no_id").val() != "" && $("#tp_id").val() != "") {
+                        $(this).parent().parent().hide();
+                        if ('{{ conf.tel }}' == 'True'){
+                            $("#tel_camp").show();
+                            $("#sol_turno_btn").show();
+                            $("#no_id").attr('disabled', 'disabled');
+                            $("#no_id").attr('readonly', 'readonly');
+                        }else{
+                            $("#sol_turno_btn").click();
+                        }
+                    }else{
+                        if ($("#tp_id").val() == "") {
+                            $("#tp_id").focus();
+                            $("#tp_id").attr('size',$('#tp_id option').length);
+                        } else {
+                            $(".table_teclado").show();
+                            $("#no_id_content").show();
+                            $("#no_id").focus();
+                        }
+                    }
+                });
+
+                $('.table_teclado .teclado').click(function(){
+                    if ($("#no_id").val() == "" && $("#no_id").is(':visible')){
+                        $("#no_id").focus();
+                        focused = $("#no_id");
+                    } else if ($("#no_id").val() != "" && $("#tel").is(':visible')){
+                        $("#tel").focus();
+                        focused = $("#tel");
+                    } else {
+                        $("#no_id").focus();
+                        focused = $("#no_id");
+                    }
+
+                    let number = $(this).text();
+                    try {
+                        if (number != '') {
+                            focused.val(focused.val() + number);
+                        }
+                    } catch (error) {
+                        console.log("no se ha realizado foco en el campo");
+                    }
+                });
+
+                $(".modal_turno").on("click",function (e){
+                    if (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/webOS/i) || navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPod/i) || navigator.userAgent.match(/BlackBerry/i) || navigator.userAgent.match(/Windows Phone/i)) {
+                        $.ajax({
+                            url:   '{% url 'dig_turno' %}',
+                            type:  "post",
+                            data: {
+                                csrfmiddlewaretoken: '{{ csrf_token }}',
+                                tp_id: $("#tp_id").val(),
+                                no_id: $("#no_id").val(),
+                                tel: $("#tel").val(),
+                                servicio: $("#tp_servicio").val(),
+                                tp_turno: $(this).attr("id"),
+                            },
+                            beforeSend: function () {
+                                $("#gifModal").modal('show');
+                                $("#turnos_view").hide();
+                                $("#modal_turno").modal('hide');
+                            },
+                            success:  function (data) {
+                                if(data.ind == 2){
+                                    window.open("{% url 'dig_ticket_turno' %}", "_self");
+                                }else{
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                        return false;
+                    }else{
+                        try {
+                            session.send(JSON.stringify({
+                                tramite: "atencion_turno",
+                                tp_id: $("#tp_id").val(),
+                                no_id: $("#no_id").val(),
+                                tel: $("#tel").val(),
+                                servicio: $("#tp_servicio").val(),
+                                tp_turno: $(this).attr("id"),
+                            }))
+                        } catch (error){
+                            window.location.reload();
+                        }
+                    }
+                });
+
+                session.onclose = function(e) {
+                    window.location.reload();
+                };
+            });
+        </script>
+    </body>
+</html>

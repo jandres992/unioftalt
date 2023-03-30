@@ -1,0 +1,158 @@
+{# app/Resources/views/plantilla.html.twig #}
+
+{% extends 'plantilla.html' %}
+
+{% block menu_personal %}
+	active
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-md-12">
+			<div class="col-lg-8 col-md-8 col-xs-12">
+				<div class="col-lg-12 col-md-12 col-xs-12">
+					<!-- /.panel central-->
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<i class="fa fa-bars fa-fw"></i> Datos Actuales del Empleado
+						</div>
+						<div class="panel-body">
+
+							<form class="" method="post" action="{% url  'actualizacionPersonal' %}" enctype="multipart/form-data">
+								{% csrf_token %}
+                                <div class="row">
+									<div class="col-md-12 form-group">
+                                        <div class="col-md-2">
+                                            <label>Nombres:</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input class="form-control" name="nombre" type="varchar" value="{{ personal.nombre }}"required />
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <label>Apellidos:</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input class="form-control" name="apellido" type="text" value="{{ personal.apellido}}" placeholder="" required />
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-xs-12">
+                                            <hr/>
+                                        </div>
+                                    </div>
+									<div class="col-md-12 form-group">
+										<div class="col-md-2">
+											<label>Tipo de ID:</label>
+										</div>
+										<div class="col-md-2">
+											<select class="form-control" name="tipoid" required>
+												<option value="">Seleccione</option>
+												<option value="{{ personal.tipoid.id }}"selected>{{ personal.tipoid.tipoid }}</option>
+												{% for tipo in tipoid %}
+													{% if personal.tipoid.tipoid == tipo.tipoid %}
+													{% else %}
+														<option value="{{ tipo.id }}">{{ tipo.tipoid }}</option>
+													{% endif %}
+												{% endfor %}
+											</select>
+										</div>
+
+										<div class="col-md-3">
+											<label>Numero de ID:</label>
+										</div>
+										<div class="col-md-5">
+											<input class="form-control" name="identificacion" type="text" value="{{ personal.identificacion }}" placeholder="" required />
+										</div>
+									</div>
+									<div class="col-md-12 form-group">
+										<div class="col-md-4">
+											<label>Lugar de Expedicion:</label>
+										</div>
+										<div class="col-md-6">
+											<input class="form-control" name="lugar" type="text" value="{{ personal.lugar }}" placeholder="" required />
+										</div>
+                                        <div class="col-lg-12 col-md-12 col-xs-12">
+                                            <hr/>
+                                        </div>
+									</div>
+
+									<div class="col-md-12 form-group">
+										<div class="col-md-1">
+											<label>Area:</label>
+										</div>
+										<div class="col-md-4">
+											<select class="form-control" name="area" required>
+												<option value="">Seleccione</option>
+												<option value="{{ personal.area.id }}" selected>{{ personal.area.area }}</option>
+												{% for area in area %}
+													{% if personal.area.area == area.area %}
+													{% else %}
+														<option value="{{ area.id }}">{{ area.area }}</option>
+													{% endif %}
+												{% endfor %}
+											</select>
+										</div>
+
+										<div class="col-md-1">
+											<label>Cargo:</label>
+										</div>
+										<div class="col-md-6">
+											<select class="form-control" name="cargo" required>
+												<option value="">Seleccione</option>
+												<option value="{{ personal.cargo.id }}" selected>{{ personal.cargo.cargo }}</option>
+												{% for cargo in cargo %}
+													{% if personal.cargo.cargo == cargo.cargo %}
+													{% else %}
+														<option value="{{ cargo.id }}">{{ cargo.cargo }}</option>
+													{% endif %}
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+									<div class="col-md-12 form-group">
+									    <div class="col-lg-12 col-md-12 col-xs-12">
+                                            <hr/>
+                                        </div>
+									</div>
+									<div class="col-md-12 form-group">
+										<div class="col-md-3">
+											<label> Cambiar Foto:</label>
+										</div>
+										<div class="col-md-5">
+											<input class="form-control" id="files" name="imagen" type="file" />
+											<output id="list"></output>
+										</div>
+
+										<div class="col-md-2">
+											<label>Estado:</label>
+										</div>
+										<div class="col-md-2">
+											<input class="form-control" id="estado" name="estado" type="checkbox" checked/>
+										</div>
+									</div>
+									<div class="col-md-12 form-group">
+										<div class="col-md-12">
+											<button type="submit" class="btn btn-success btn-lg">Guardar</button>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-4 col-md-4 col-xs-12">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<i class="fa fa-bars fa-fw"></i> Foto Actual
+					</div>
+					<div class="panel-body">
+						<div class="col-sm-12">
+							<img class="fotomedia" src="/media/{{ personal.imagen }}" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

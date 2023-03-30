@@ -1,0 +1,71 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block titulo_pag %}
+    Llamado consultorio - {{ empresa.nombre }}
+{% endblock %}
+
+
+{% block pagina %}
+    Llamado Pacientes  - {{ request.session.consultorio }}
+{% endblock %}
+
+
+{% block menu_digiturno %}
+    active
+{% endblock %}
+
+{% block modal %}
+    {% include 'general/modal_paciente.html' %}
+{% endblock %}
+
+{% block style %}
+    <style>
+        .table {
+            font-size: 8pt !important;
+            color: black;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% include 'general/busq_persona.html' %}
+    <div class="row">
+        <div class="col-12 text-center mt-3 pt-3">
+            <div class="row row-cols-1 d-flex">
+                <div class="btn-group btn-block" role="group" aria-label="Basic example">
+                   <button type="button" class="btn btn-success" id="llamado">Llamado</button>
+                   <button type="button" class="btn btn-danger" id="u_llamado">Ultimo Llamado</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(document).ready(function (e){
+            notificacion({{ ind }},"<small style='font-size:10pt;'>{{ aviso }}</small>");
+
+            const session = new WebSocket(`ws://${window.location.host}/ws/llamadoConsult/`)
+
+            session.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+            };
+
+            session.onclose = function(e) {
+                window.location.reload();
+            };
+
+            /*$("body").click(function (e){
+                session.send(JSON.stringify({
+                    'id_pcte': 1,
+                    'id_consultorio': 1,
+                    'id_user': 1,
+                    'llamado': true,
+                    'u_llamado':false
+                }))
+            })*/
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'dashboard.html' %}
+
+{% block titulo %}
+    Menú
+{% endblock %}
+
+{% block pagina %}
+    Menú
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+    {% for g in request.user.groups.all %}
+        {% if g.name == "digiturno reporte diario" %}
+            <a class="col-lg-4 col-md-6 col-sm-6 col-12" href="{% url 'dig_admin' %}">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-white">
+                        <div class="progress-widget">
+                            <div class="text-center circle-progress-01 circle-progress circle-progress-primary">
+                                <i class="icofont-ticket" style="font-size: 40pt !important;"></i>
+                            </div>
+                            <div class="progress-detail text-white">
+                               <b class="mb-1"style="font-size: 10pt;">Turno Digital:</b>
+                               <p class="mt-0" style="font-size: 14pt; font-weight: 900;">Panel de revisión</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% endif %}
+        {% if g.name == "digiturno llamado paciente" %}
+            <a class="col-lg-4 col-sm-6 col-12" href="{% url 'dig_llamado_consultorio' %}">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-white">
+                        <div class="progress-widget">
+                            <div class="text-center circle-progress-01 circle-progress circle-progress-primary">
+                                <i class="icofont-doctor" style="font-size: 40pt !important;"></i>
+                            </div>
+                            <div class="progress-detail text-white">
+                               <b class="mb-1"style="font-size: 10pt;">Trueno Digital:</b>
+                               <p class="mt-0" style="font-size: 14pt; font-weight: 900;">Llamado de consultorio</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        {% endif %}
+    {% endfor %}
+    </div>
+{% endblock %}
+
+{% block scripts%}
+    <script>
+        $(document).ready(function (e){
+            $('#menu').addClass('active');
+            notificacion({{ ind }}, "{{ aviso }}");
+        });
+    </script>
+{% endblock %}
