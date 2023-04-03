@@ -9,16 +9,16 @@
         <title>{% block titulo %}{% endblock %} - Health clinic</title>
 
         <link rel="shortcut icon" href="{% static 'img/logo.png' %}"/>
-        <link rel="stylesheet" href="{% static 'dashboard/assets/css/core/libs.min.css' %}"/>
-        <link rel="stylesheet" href="{% static 'dashboard/assets/vendor/aos/dist/aos.css' %}"/>
-        <link rel="stylesheet" href="{% static 'dashboard/assets/css/hope-ui.min.css' %}"/>
-        <link rel="stylesheet" href="{% static 'dashboard/assets/css/custom.min.css' %}"/>
-        <link rel="stylesheet" href="{% static 'dashboard/assets/css/dark.min.css' %}"/>
-        <link rel="stylesheet" href="{% static 'dashboard/assets/css/rtl.min.css' %}"/>
-        <link rel="stylesheet" href="{% static 'dashboard/assets/css/customizer.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/css/core/libs.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/vendor/aos/dist/aos.css' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/css/hope-ui.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/css/custom.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/css/dark.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/css/rtl.min.css' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/css/customizer.min.css' %}"/>
         <link rel="stylesheet" href="{% static 'icon/icofont/css/icofont.min.css' %}"/>
         <link rel="stylesheet" href="{% static 'notificacion/css/animate.css' %}"/>
-        <link rel="stylesheet" href="{% static 'dashboard/assets/css/modal_cargando.css' %}"/>
+        <link rel="stylesheet" href="{% static 'assets/css/modal_cargando.css' %}"/>
         <style>
             @media (min-width: 1300px) {
                 .modal-lg, .modal-xl {
@@ -130,12 +130,12 @@
         </style>
         {% block style %}{% endblock %}
     </head>
-    <body class="">
+    <body>
         {% block flotante %}{% endblock %}
         {% block modal %}{% endblock %}
         {% include 'general/menu_lat.html' %}
 
-        <main class="main-content">
+        <main class="main-content body" style="display: none;">
             <div class="position-relative">
                 <nav class="nav navbar navbar-expand-lg navbar-light iq-navbar">
                     <div class="container-fluid navbar-inner">
@@ -173,8 +173,8 @@
                                         </div>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                        <!--li><a class="dropdown-item" href="../dashboard/app/user-profile.html">Profile</a></li>
-                                        <li><a class="dropdown-item" href="../dashboard/app/user-privacy-setting.html">Privacy Setting</a></li-->
+                                        <!--li><a class="dropdown-item" href="../app/user-profile.html">Profile</a></li>
+                                        <li><a class="dropdown-item" href="../app/user-privacy-setting.html">Privacy Setting</a></li-->
                                         <li>
                                             <a class="dropdown-item" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPers" role="button" aria-controls="offcanvas">
                                                 <i class="icofont-settings"></i>
@@ -208,17 +208,17 @@
                         </div>
                     </div>
                     <div class="iq-header-img" style="height: 160px !important;">
-                        <img src="{% static 'dashboard/assets/images/dashboard/top-header.png' %}" alt="header"
+                        <img src="{% static 'assets/images/dashboard/top-header.png' %}" alt="header"
                              class="theme-color-default-img img-fluid w-100 h-100 animated-scaleX">
-                        <img src="{% static 'dashboard/assets/images/dashboard/top-header1.png' %}" alt="header"
+                        <img src="{% static 'assets/images/dashboard/top-header1.png' %}" alt="header"
                              class="theme-color-purple-img img-fluid w-100 h-100 animated-scaleX">
-                        <img src="{% static 'dashboard/assets/images/dashboard/top-header2.png' %}" alt="header"
+                        <img src="{% static 'assets/images/dashboard/top-header2.png' %}" alt="header"
                              class="theme-color-blue-img img-fluid w-100 h-100 animated-scaleX">
-                        <img src="{% static 'dashboard/assets/images/dashboard/top-header3.png' %}" alt="header"
+                        <img src="{% static 'assets/images/dashboard/top-header3.png' %}" alt="header"
                              class="theme-color-green-img img-fluid w-100 h-100 animated-scaleX">
-                        <img src="{% static 'dashboard/assets/images/dashboard/top-header4.png' %}" alt="header"
+                        <img src="{% static 'assets/images/dashboard/top-header4.png' %}" alt="header"
                              class="theme-color-yellow-img img-fluid w-100 h-100 animated-scaleX">
-                        <img src="{% static 'dashboard/assets/images/dashboard/top-header5.png' %}" alt="header"
+                        <img src="{% static 'assets/images/dashboard/top-header5.png' %}" alt="header"
                              class="theme-color-pink-img img-fluid w-100 h-100 animated-scaleX">
                     </div>
                 </div>
@@ -240,20 +240,19 @@
             </footer>
         </main>
 
-        {% block progcx_act %}{% endblock %}
         {% include 'general/settings.html' %}
         {% include 'general/modal_cargando.html' %}
 
-        <script src="{% static 'dashboard/assets/js/core/libs.min.js' %}"></script>
-        <script src="{% static 'dashboard/assets/js/core/external.min.js' %}"></script>
-        <script src="{% static 'dashboard/assets/js/charts/widgetcharts.js' %}"></script>
-        <script src="{% static 'dashboard/assets/js/charts/vectore-chart.js' %}"></script>
-        <script src="{% static 'dashboard/assets/js/charts/dashboard.js' %}"></script>
-        <script src="{% static 'dashboard/assets/js/plugins/fslightbox.js' %}"></script>
-        <script src="{% static 'dashboard/assets/js/plugins/setting.js' %}"></script>
-        <script src="{% static 'dashboard/assets/js/plugins/form-wizard.js' %}"></script>
-        <script src="{% static 'dashboard/assets/vendor/aos/dist/aos.js' %}"></script>
-        <script src="{% static 'dashboard/assets/js/hope-ui.js' %}"></script>
+        <script src="{% static 'assets/js/core/libs.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/external.min.js' %}"></script>
+        <script src="{% static 'assets/js/charts/widgetcharts.js' %}"></script>
+        <script src="{% static 'assets/js/charts/vectore-chart.js' %}"></script>
+        <script src="{% static 'assets/js/charts/dashboard.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/fslightbox.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/setting.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/form-wizard.js' %}"></script>
+        <script src="{% static 'assets/vendor/aos/dist/aos.js' %}"></script>
+        <script src="{% static 'assets/js/hope-ui.js' %}"></script>
         <script src="{% static 'notificacion/bootstrap_notify/bootstrap-notify.js' %}"></script>
         <script src="{% static 'notificacion/js/notificacion.js' %}"></script>
         <script src="{% static 'js/dataTables.buttons.min.js' %}"></script>
@@ -263,6 +262,8 @@
         <script src="{% static 'js/vfs_fonts.js' %}"></script>
         <script>
             $(document).ready(function (e){
+                $("#gifModal").modal('show');
+                
                 $('body').addClass("theme-color-gray");
                 $('aside').removeClass("sidebar-white navs-rounded-all");
                 $('aside').addClass("sidebar-dark navs-pill");
@@ -355,9 +356,20 @@
                     return false;
                 })
                 {% include 'general/busq_mpio.js' %}
-            });
-            $('a[data-bs-toggle="tooltip"]').click(function (e){
-                $("#gifModal").modal("show");
+
+                $('a[data-bs-toggle="tooltip"]').click(function (e){
+                    $("#gifModal").modal("show");
+                });
+
+                var i = 0
+                var t = 2
+                /*while(i < t){
+                    if($("body").hasClass("theme-color-gray") == "true"){
+                        $("#gifModal").modal("hide");
+                        $(".body").show();
+                        i = t
+                    }
+                }*/
             });
         </script>
         {% block scripts %}{% endblock %}
